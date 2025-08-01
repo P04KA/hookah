@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@700&display=swap');
+
 .App {
   text-align: center;
 }
@@ -42,13 +44,42 @@ body, html, #root, .App {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  background: linear-gradient(135deg, #232526 0%, #e0e0e0 100%);
   color: #fff;
+  overflow-x: hidden;
+}
+
+.App {
+  position: relative;
+  z-index: 1;
+}
+
+.bg-parallax {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 60% 20%, #fff2 0%, #232526 80%);
+  animation: parallax-bg 10s linear infinite alternate;
+}
+@keyframes parallax-bg {
+  0% { background-position: 60% 20%; }
+  100% { background-position: 40% 80%; }
 }
 
 .header {
   text-align: center;
   margin-top: 24px;
+  color: #fff;
+  text-shadow: 0 2px 16px #000a;
+}
+
+.header h1 {
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2em;
 }
 
 .counter-block {
@@ -56,71 +87,84 @@ body, html, #root, .App {
   flex-direction: column;
   align-items: center;
   margin: 32px 0 16px 0;
+  position: relative;
 }
 
 .smoke-count {
-  font-size: 2.5rem;
+  font-size: 2.7rem;
   margin-bottom: 16px;
   font-weight: bold;
-  text-shadow: 0 2px 8px #000a;
+  text-shadow: 0 2px 16px #000a;
+  color: #fff;
+  animation: fadeInSmoke 1.2s;
 }
 
 .smoke-btn {
-  background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+  background: linear-gradient(90deg, #fff 0%, #e0e0e0 100%);
   color: #232526;
   border: none;
   border-radius: 32px;
-  font-size: 1.3rem;
-  padding: 16px 40px;
+  font-size: 1.4rem;
+  padding: 18px 44px;
   font-weight: bold;
-  box-shadow: 0 4px 16px #0004;
+  box-shadow: 0 6px 24px #0003;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  margin-bottom: 8px;
+  animation: fadeInUp 0.7s;
 }
 .smoke-btn:active {
-  background: linear-gradient(90deg, #ffcc33 0%, #ffb347 100%);
+  background: linear-gradient(90deg, #e0e0e0 0%, #fff 100%);
   transform: scale(0.97);
+  box-shadow: 0 2px 8px #0002;
 }
 
 .shop-btn {
   margin: 0 auto 24px auto;
   display: block;
-  background: #232526;
-  color: #ffcc33;
-  border: 2px solid #ffcc33;
+  background: linear-gradient(90deg, #fff 0%, #e0e0e0 100%);
+  color: #232526;
+  border: 2px solid #fff;
   border-radius: 24px;
   font-size: 1.1rem;
-  padding: 10px 32px;
+  padding: 12px 36px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px #0002;
+  animation: fadeInUp 0.8s;
 }
 .shop-btn:hover {
-  background: #ffcc33;
-  color: #232526;
+  background: #232526;
+  color: #fff;
+  border-color: #ffcc33;
 }
 
 .shop-modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(30,30,30,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.4s;
 }
 .shop-content {
-  background: #232526;
-  border-radius: 24px;
-  padding: 32px 24px 24px 24px;
+  background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+  border-radius: 28px;
+  padding: 36px 28px 28px 28px;
   min-width: 320px;
-  max-width: 90vw;
+  max-width: 95vw;
   box-shadow: 0 8px 32px #000a;
   text-align: center;
+  color: #232526;
+  animation: fadeInUp 0.7s;
 }
 .shop-content h2 {
   margin-top: 0;
-  color: #ffcc33;
+  color: #232526;
+  font-weight: bold;
 }
 .shop-content ul {
   list-style: none;
@@ -133,28 +177,95 @@ body, html, #root, .App {
 }
 .shop-content button {
   margin-top: 6px;
-  background: #ffcc33;
-  color: #232526;
+  background: linear-gradient(90deg, #232526 0%, #ffcc33 100%);
+  color: #fff;
   border: none;
   border-radius: 16px;
-  padding: 6px 18px;
+  padding: 8px 22px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #0002;
 }
 .shop-content button:disabled {
   background: #aaa;
   color: #fff;
   cursor: not-allowed;
 }
-.footer {
-  text-align: center;
-  margin: 32px 0 0 0;
-  color: #ffcc33;
-  font-size: 1rem;
-  opacity: 0.7;
+.shop-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
 }
-
+.shop-tabs button {
+  background: #232526;
+  color: #ffcc33;
+  border: 2px solid #ffcc33;
+  border-radius: 16px;
+  font-size: 1rem;
+  padding: 6px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.shop-tabs button[aria-selected="true"], .shop-tabs button.active {
+  background: #ffcc33;
+  color: #232526;
+}
+.hookah-card, .tobacco-card {
+  background: rgba(255,255,255,0.85);
+  border-radius: 20px;
+  padding: 16px;
+  min-width: 180px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px #0002;
+  position: relative;
+  animation: fadeInUp 0.7s;
+}
+.hookah-card img, .tobacco-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px #0001;
+}
+.hookah-card button, .tobacco-card button {
+  margin-top: 8px;
+  background: linear-gradient(90deg, #232526 0%, #ffcc33 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #0002;
+}
+.hookah-card button:disabled, .tobacco-card button:disabled {
+  background: #aaa;
+  color: #fff;
+  cursor: not-allowed;
+}
+.hookah-card .active-label {
+  color: #ffcc33;
+  margin-top: 4px;
+  font-weight: bold;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .smoke-anim {
   position: absolute;
   left: 50%;
@@ -178,75 +289,187 @@ body, html, #root, .App {
     transform: translateX(-50%) scale(1.4) translateY(-70px);
   }
 }
+.footer {
+  text-align: center;
+  margin: 32px 0 0 0;
+  color: #ffcc33;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.glow {
+  box-shadow: 0 0 32px 8px #ffcc33cc, 0 4px 24px #0002 !important;
+  animation: glow-pop 0.9s;
+}
+@keyframes glow-pop {
+  0% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #0002; }
+  40% { box-shadow: 0 0 32px 12px #ffcc33cc, 0 4px 24px #0002; }
+  100% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #0002; }
+}
+.shop-content, .hookah-card, .tobacco-card {
+  backdrop-filter: blur(6px) saturate(1.2);
+  background: linear-gradient(135deg, #fff9 60%, #e0e0e099 100%);
+}
+
+.bg-smoke {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-smoke-1, .bg-smoke-2, .bg-smoke-3 {
+  position: absolute;
+  opacity: 0.18;
+  filter: blur(8px);
+  animation: bgSmokeMove 24s linear infinite;
+}
+.bg-smoke-2 {
+  left: 60vw;
+  top: 30vh;
+  opacity: 0.13;
+  animation-duration: 32s;
+  animation-delay: 4s;
+}
+.bg-smoke-3 {
+  left: 20vw;
+  top: 60vh;
+  opacity: 0.10;
+  animation-duration: 40s;
+  animation-delay: 8s;
+}
+@keyframes bgSmokeMove {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-60px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+.smoke-count {
+  font-size: 2.7rem;
+  margin-bottom: 16px;
+  font-weight: bold;
+  text-shadow: 0 2px 16px #000a;
+  color: #fff;
+  animation: fadeInSmoke 1.2s;
+}
+@keyframes fadeInSmoke {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+.achievements {
+  margin: 18px 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.achievement {
+  background: linear-gradient(90deg, #fff 0%, #ffcc33 100%);
+  color: #232526;
+  border-radius: 12px;
+  padding: 6px 16px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px #0002;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInUp 0.7s;
+}
+.top-players {
+  margin: 18px 0 0 0;
+  background: rgba(255,255,255,0.7);
+  border-radius: 16px;
+  padding: 12px 18px;
+  color: #232526;
+  box-shadow: 0 2px 8px #0001;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeInUp 0.7s;
+}
+.top-players-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ffcc33;
+}
+.top-players-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.top-players-list li {
+  margin-bottom: 4px;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tobacco-bar {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 8px;
+  margin: 8px 0 4px 0;
+  overflow: hidden;
+  box-shadow: 0 1px 4px #0001;
+}
+.tobacco-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #ffcc33 0%, #fff 100%);
+  border-radius: 8px;
+  transition: width 0.5s cubic-bezier(.4,2,.6,1);
+}
+.balance-bar {
+  width: 80%;
+  height: 10px;
+  background: #fff3;
+  border-radius: 6px;
+  margin: 0 auto 12px auto;
+  overflow: hidden;
+}
+.balance-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #ffcc33 0%, #fff 100%);
+  border-radius: 6px;
+  transition: width 0.7s cubic-bezier(.4,2,.6,1);
+}
+.shop-exit-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #232526cc;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 10;
+}
+.shop-exit-btn:hover {
+  background: #ffcc33;
+  color: #232526;
+}
 
 @media (max-width: 600px) {
   .shop-content {
-    min-width: 90vw;
+    min-width: 95vw;
     padding: 18px 4vw 18px 4vw;
   }
   .smoke-btn {
     font-size: 1.1rem;
     padding: 12px 10vw;
   }
-}
-
-.shop-tabs {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-.shop-tabs button {
-  background: #232526;
-  color: #ffcc33;
-  border: 2px solid #ffcc33;
-  border-radius: 16px;
-  font-size: 1rem;
-  padding: 6px 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.shop-tabs button[aria-selected="true"], .shop-tabs button.active {
-  background: #ffcc33;
-  color: #232526;
-}
-.hookah-card, .tobacco-card {
-  background: #333;
-  border-radius: 16px;
-  padding: 12px;
-  min-width: 180px;
-  max-width: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.hookah-card img, .tobacco-card img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 8px;
-}
-.hookah-card button, .tobacco-card button {
-  margin-top: 6px;
-  background: #ffcc33;
-  color: #232526;
-  border: none;
-  border-radius: 12px;
-  padding: 6px 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.hookah-card button:disabled, .tobacco-card button:disabled {
-  background: #aaa;
-  color: #fff;
-  cursor: not-allowed;
-}
-.hookah-card .active-label {
-  color: #ffcc33;
-  margin-top: 4px;
-  font-weight: bold;
+  .hookah-card img, .tobacco-card img {
+    width: 80px;
+    height: 80px;
+  }
 }

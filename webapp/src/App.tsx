@@ -40,15 +40,29 @@ function getTobaccoBonus(name: string, level: number): number {
   return 0;
 }
 
-// Пример фоток (можно заменить на свои)
+// SVG/PNG картинки (работающие)
 const HOOKAHS = [
-  { name: 'Alpha Hookah', img: 'https://cdn.hookahmarket.ru/upload/resize_cache/iblock/1e2/400_400_1/1e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.jpg', cost: 100, bonus: '+2 дыма за клик' },
-  { name: 'Xhoob', img: 'https://cdn.hookahmarket.ru/upload/resize_cache/iblock/2b2/400_400_1/2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b.jpg', cost: 200, bonus: '+4 дыма за клик' },
-  { name: 'Maklaud', img: 'https://cdn.hookahmarket.ru/upload/resize_cache/iblock/3c3/400_400_1/3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c.jpg', cost: 350, bonus: '+7 дыма за клик' },
+  { name: 'Alpha Hookah', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/hookah.svg', cost: 100, bonus: '+2 дыма за клик' },
+  { name: 'Xhoob', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-xing.svg', cost: 200, bonus: '+4 дыма за клик' },
+  { name: 'Maklaud', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-mastercard.svg', cost: 350, bonus: '+7 дыма за клик' },
+  { name: 'Khalil Mamoon', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-hipchat.svg', cost: 500, bonus: '+12 дыма за клик' },
+  { name: 'Union Hookah', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-unity.svg', cost: 700, bonus: '+18 дыма за клик' },
 ];
 const TOBACCOS = [
-  { name: 'Darkside', img: 'https://cdn.hookahmarket.ru/upload/resize_cache/iblock/4d4/400_400_1/4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d.jpg', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
-  { name: 'Musthave', img: 'https://cdn.hookahmarket.ru/upload/resize_cache/iblock/5e5/400_400_1/5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e.jpg', baseCost: 40, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Darkside', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant.svg', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
+  { name: 'Musthave', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant-2.svg', baseCost: 40, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Tangiers', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant-3.svg', baseCost: 60, bonus: '+2 дыма за клик за уровень', maxLevel: 5 },
+];
+const ACHIEVEMENTS = [
+  { icon: '🥇', label: 'Первый дым', check: (smoke:number)=>smoke>=1 },
+  { icon: '🔥', label: '100 дыма', check: (smoke:number)=>smoke>=100 },
+  { icon: '💎', label: 'Кальян-мастер', check: (smoke:number, ownedHookahs:string[])=>ownedHookahs.length>=3 },
+  { icon: '🌬️', label: 'Дымный бог', check: (smoke:number)=>smoke>=1000 },
+];
+const TOP_PLAYERS = [
+  { name: 'P04KA', score: 9999 },
+  { name: 'SmokeKing', score: 8888 },
+  { name: 'AlphaUser', score: 7777 },
 ];
 
 function App() {
@@ -63,6 +77,7 @@ function App() {
   const [activeHookah, setActiveHookah] = useState<string>('Alpha Hookah');
   const [tobaccoLevels, setTobaccoLevels] = useState<{[name:string]:number}>({});
   const [profileOpen, setProfileOpen] = useState(false);
+  const [glowCard, setGlowCard] = useState<string|null>(null);
 
   const smokePerClick = useMemo(() => {
     let base = 1;
@@ -144,25 +159,50 @@ function App() {
     }
   };
 
-  // Покупка кальяна
+  // Покупка кальяна с анимацией
   const handleBuyHookah = (name: string) => {
     if (!ownedHookahs.includes(name)) {
       setOwnedHookahs([...ownedHookahs, name]);
       setActiveHookah(name);
+      setGlowCard('hookah-'+name);
+      setTimeout(()=>setGlowCard(null), 900);
     } else {
       setActiveHookah(name);
     }
   };
-  // Прокачка табака
+  // Прокачка табака с анимацией
   const handleUpgradeTobacco = (name: string) => {
     setTobaccoLevels(levels => {
       const lvl = (levels[name] || 0) + 1;
+      setGlowCard('tobacco-'+name);
+      setTimeout(()=>setGlowCard(null), 900);
       return { ...levels, [name]: lvl };
     });
   };
 
   return (
     <div className="App">
+      <div className="bg-parallax"></div>
+      <div className="bg-smoke">
+        <svg className="bg-smoke-1" width="220" height="120" viewBox="0 0 220 120">
+          <ellipse cx="110" cy="60" rx="90" ry="40" fill="#fff" />
+          <ellipse cx="160" cy="40" rx="40" ry="20" fill="#fff" opacity="0.7"/>
+          <ellipse cx="60" cy="80" rx="30" ry="15" fill="#fff" opacity="0.5"/>
+        </svg>
+        <svg className="bg-smoke-2" width="180" height="100" viewBox="0 0 180 100">
+          <ellipse cx="90" cy="50" rx="70" ry="30" fill="#fff" />
+          <ellipse cx="130" cy="30" rx="30" ry="12" fill="#fff" opacity="0.6"/>
+        </svg>
+        <svg className="bg-smoke-3" width="160" height="80" viewBox="0 0 160 80">
+          <ellipse cx="80" cy="40" rx="60" ry="25" fill="#fff" />
+        </svg>
+        <svg className="bg-smoke-4" width="200" height="100" viewBox="0 0 200 100">
+          <ellipse cx="100" cy="50" rx="80" ry="35" fill="#fff" />
+        </svg>
+        <svg className="bg-smoke-5" width="140" height="70" viewBox="0 0 140 70">
+          <ellipse cx="70" cy="35" rx="60" ry="20" fill="#fff" />
+        </svg>
+      </div>
       <header className="header">
         <span role="img" aria-label="hookah" style={{fontSize: 32}}>💨</span>
         <h1>Кальян Кликер</h1>
@@ -173,11 +213,14 @@ function App() {
         <>
           <div className="counter-block" style={{position: 'relative', minHeight: 120}}>
             <div className="smoke-count">{smoke} <span role="img" aria-label="smoke">💨</span></div>
+            <div className="balance-bar">
+              <div className="balance-bar-inner" style={{width: Math.min(100, Math.sqrt(smoke)*10) + '%'}}></div>
+            </div>
             <button className="smoke-btn" onClick={handleSmoke}>
               Курить кальян (+{smokePerClick})
             </button>
             {smokeAnims.map((id, i) => (
-              <svg key={id} className="smoke-anim" width="48" height="48" viewBox="0 0 48 48">
+              <svg key={id} className="smoke-anim" width="48" height="48" viewBox="0 0 48 48" style={{left:`calc(50% + ${Math.sin(id%360)*10}px)`}}>
                 <ellipse cx="24" cy="24" rx="16" ry="10" fill="white" opacity="0.7"/>
                 <ellipse cx="32" cy="18" rx="8" ry="6" fill="white" opacity="0.5"/>
                 <ellipse cx="16" cy="20" rx="7" ry="5" fill="white" opacity="0.4"/>
@@ -188,20 +231,21 @@ function App() {
             🛒 Магазин
           </button>
           {shopOpen && (
-            <div className="shop-modal">
-              <div className="shop-content">
-                <div style={{display:'flex', gap:8, justifyContent:'center', marginBottom:16}}>
-                  <button onClick={()=>setShopTab('hookahs')} style={{fontWeight:shopTab==='hookahs'?'bold':'normal'}}>Кальяны</button>
-                  <button onClick={()=>setShopTab('tobaccos')} style={{fontWeight:shopTab==='tobaccos'?'bold':'normal'}}>Табаки</button>
-                  <button onClick={()=>setShopTab('upgrades')} style={{fontWeight:shopTab==='upgrades'?'bold':'normal'}}>Апгрейды</button>
+            <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
+              <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
+                <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">✖️</button>
+                <div className="shop-tabs">
+                  <button onClick={()=>setShopTab('hookahs')} className={shopTab==='hookahs'?'active':''}>Кальяны</button>
+                  <button onClick={()=>setShopTab('tobaccos')} className={shopTab==='tobaccos'?'active':''}>Табаки</button>
+                  <button onClick={()=>setShopTab('upgrades')} className={shopTab==='upgrades'?'active':''}>Апгрейды</button>
                 </div>
                 {shopTab==='hookahs' && (
                   <div>
                     <h2>Кальяны</h2>
                     <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center'}}>
                       {HOOKAHS.map(h=>
-                        <div key={h.name} style={{background:'#333',borderRadius:16,padding:12,minWidth:180,maxWidth:200}}>
-                          <img src={h.img} alt={h.name} style={{width:120,height:120,objectFit:'cover',borderRadius:12,marginBottom:8}}/>
+                        <div key={h.name} className={`hookah-card${glowCard==='hookah-'+h.name?' glow':''}`}>
+                          <img src={h.img} alt={h.name} />
                           <div style={{fontWeight:'bold',fontSize:18}}>{h.name}</div>
                           <div style={{fontSize:14,opacity:0.8}}>{h.bonus}</div>
                           <div style={{margin:'8px 0'}}>{h.cost}💨</div>
@@ -213,7 +257,7 @@ function App() {
                           {ownedHookahs.includes(h.name) && activeHookah!==h.name && (
                             <button onClick={()=>setActiveHookah(h.name)} style={{marginTop:4}}>Сделать активным</button>
                           )}
-                          {activeHookah===h.name && <div style={{color:'#ffcc33',marginTop:4}}>Активный</div>}
+                          {activeHookah===h.name && <div className="active-label">Активный</div>}
                         </div>
                       )}
                     </div>
@@ -224,11 +268,14 @@ function App() {
                     <h2>Табаки</h2>
                     <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center'}}>
                       {TOBACCOS.map(t=>
-                        <div key={t.name} style={{background:'#333',borderRadius:16,padding:12,minWidth:180,maxWidth:200}}>
-                          <img src={t.img} alt={t.name} style={{width:120,height:120,objectFit:'cover',borderRadius:12,marginBottom:8}}/>
+                        <div key={t.name} className={`tobacco-card${glowCard==='tobacco-'+t.name?' glow':''}`}>
+                          <img src={t.img} alt={t.name} />
                           <div style={{fontWeight:'bold',fontSize:18}}>{t.name}</div>
                           <div style={{fontSize:14,opacity:0.8}}>{t.bonus}</div>
                           <div>Уровень: {tobaccoLevels[t.name]||0} / {t.maxLevel}</div>
+                          <div className="tobacco-bar">
+                            <div className="tobacco-bar-inner" style={{width: ((tobaccoLevels[t.name]||0)/t.maxLevel*100)+'%'}}></div>
+                          </div>
                           <div style={{margin:'8px 0'}}>{t.baseCost*((tobaccoLevels[t.name]||0)+1)}💨</div>
                           <button onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke<t.baseCost*((tobaccoLevels[t.name]||0)+1) || (tobaccoLevels[t.name]||0)>=t.maxLevel}>
                             { (tobaccoLevels[t.name]||0)>=t.maxLevel ? 'Макс. уровень' : 'Прокачать' }
@@ -258,19 +305,23 @@ function App() {
                     </ul>
                   </div>
                 )}
-                <button onClick={() => setShopOpen(false)}>Закрыть</button>
               </div>
             </div>
           )}
           <button className="shop-btn" onClick={()=>setProfileOpen(true)} style={{marginTop:8,marginBottom:0}}>👤 Профиль</button>
           {profileOpen && (
-            <div className="shop-modal">
-              <div className="shop-content">
+            <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
+              <div className="shop-content" style={{animation:'fadeInUp 0.7s'}}>
                 <h2>Профиль</h2>
                 <div style={{marginBottom:12}}>
                   <b>Дым:</b> {smoke} 💨
                 </div>
-                <div style={{marginBottom:12}}>
+                <div className="achievements">
+                  {ACHIEVEMENTS.filter(a=>a.check(smoke,ownedHookahs)).map(a=>(
+                    <span className="achievement" key={a.label}>{a.icon} {a.label}</span>
+                  ))}
+                </div>
+                <div style={{marginBottom:12,marginTop:18}}>
                   <b>Активный кальян:</b><br/>
                   <img src={HOOKAHS.find(h=>h.name===activeHookah)?.img} alt={activeHookah} style={{width:80,height:80,borderRadius:12,margin:'8px 0'}}/><br/>
                   <span>{activeHookah}</span>
@@ -292,6 +343,14 @@ function App() {
                 <div style={{marginBottom:12}}>
                   <b>Апгрейды:</b><br/>
                   {upgrades.length===0 ? 'Нет' : upgrades.join(', ')}
+                </div>
+                <div className="top-players">
+                  <div className="top-players-title">Топ игроков</div>
+                  <ul className="top-players-list">
+                    {TOP_PLAYERS.map((p,i)=>(
+                      <li key={p.name}><span style={{fontWeight:'bold',color:'#ffcc33'}}>{i+1}.</span> {p.name} <span style={{color:'#888'}}>— {p.score}💨</span></li>
+                    ))}
+                  </ul>
                 </div>
                 <button onClick={()=>setProfileOpen(false)}>Закрыть</button>
               </div>
