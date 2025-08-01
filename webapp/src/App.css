@@ -1,0 +1,167 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body, html, #root, .App {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #fff;
+}
+
+.header {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.counter-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 32px 0 16px 0;
+}
+
+.smoke-count {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  font-weight: bold;
+  text-shadow: 0 2px 8px #000a;
+}
+
+.smoke-btn {
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+  color: #232526;
+  border: none;
+  border-radius: 32px;
+  font-size: 1.3rem;
+  padding: 16px 40px;
+  font-weight: bold;
+  box-shadow: 0 4px 16px #0004;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.smoke-btn:active {
+  background: linear-gradient(90deg, #ffcc33 0%, #ffb347 100%);
+  transform: scale(0.97);
+}
+
+.shop-btn {
+  margin: 0 auto 24px auto;
+  display: block;
+  background: #232526;
+  color: #ffcc33;
+  border: 2px solid #ffcc33;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  padding: 10px 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.shop-btn:hover {
+  background: #ffcc33;
+  color: #232526;
+}
+
+.shop-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.shop-content {
+  background: #232526;
+  border-radius: 24px;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px #000a;
+  text-align: center;
+}
+.shop-content h2 {
+  margin-top: 0;
+  color: #ffcc33;
+}
+.shop-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+.shop-content li {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+.shop-content button {
+  margin-top: 6px;
+  background: #ffcc33;
+  color: #232526;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.shop-content button:disabled {
+  background: #aaa;
+  color: #fff;
+  cursor: not-allowed;
+}
+.footer {
+  text-align: center;
+  margin: 32px 0 0 0;
+  color: #ffcc33;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  .shop-content {
+    min-width: 90vw;
+    padding: 18px 4vw 18px 4vw;
+  }
+  .smoke-btn {
+    font-size: 1.1rem;
+    padding: 12px 10vw;
+  }
+}
