@@ -6,7 +6,7 @@ const tg = WebApp;
 tg.ready();
 tg.expand();
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = "https://hookah-pe44ka.amvera.io/api";
 
 function getUserIdFromTelegram(): number {
   try {
