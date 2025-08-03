@@ -49,10 +49,10 @@ function getTobaccoBonus(name: string, level: number): number {
 // Реальные картинки кальянов и табаков
 const HOOKAHS = [
   { name: 'Alpha Hookah', img: './alpha_hookah.png', cost: 100, bonus: '+2 дыма за клик' },
-  { name: 'Xhoob', img: 'https://w7.pngwing.com/pngs/813/547/png-transparent-golden-hookah-luxury-jewelry-hookah-smoke-fine-thumbnail.png', cost: 200, bonus: '+4 дыма за клик' },
-  { name: 'Maklaud', img: 'https://i.imgur.com/2Qw1QwB.png', cost: 350, bonus: '+7 дыма за клик' },
-  { name: 'Khalil Mamoon', img: 'https://i.imgur.com/3Qw1QwB.png', cost: 500, bonus: '+12 дыма за клик' },
-  { name: 'Union Hookah', img: 'https://i.imgur.com/4Qw1QwB.png', cost: 700, bonus: '+18 дыма за клик' },
+  { name: 'Xhoob', img: 'https://pngimg.com/d/hookah_PNG6.png', cost: 200, bonus: '+4 дыма за клик' },
+  { name: 'Maklaud', img: 'https://pngimg.com/d/hookah_PNG8.png', cost: 350, bonus: '+7 дыма за клик' },
+  { name: 'Khalil Mamoon', img: 'https://pngimg.com/d/hookah_PNG10.png', cost: 500, bonus: '+12 дыма за клик' },
+  { name: 'Union Hookah', img: 'https://pngimg.com/d/hookah_PNG11.png', cost: 700, bonus: '+18 дыма за клик' },
 ];
 const TOBACCOS = [
   { name: 'Darkside', img: 'https://i.imgur.com/5Qw1QwB.png', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
@@ -386,18 +386,20 @@ function App() {
                     <h2>Кальяны</h2>
                     <ul className="hookahs-list">
                       {HOOKAHS.map((h, idx) => (
-                        <li key={h.name} style={{marginBottom: 8}}>
-                          <img src={h.img} alt={h.name} style={{width:48,height:48,objectFit:'contain',borderRadius:8,background:'#0f1e13',marginBottom:4}}/>
-                          <div style={{fontWeight:600}}>{h.name}</div>
-                          <div style={{fontSize:'0.95em',color:'#00ff99'}}>{h.bonus}</div>
-                          <div style={{fontSize:'0.95em'}}>Цена: {getHookahCost(idx)}💨</div>
-                          {ownedHookahs.includes(h.name) ? (
-                            <span style={{color:'#00ff99'}}>Куплено ✅</span>
-                          ) : (
-                            <button className="buy-btn" onClick={()=>handleBuyHookah(h.name)} disabled={smoke < getHookahCost(idx)}>
-                              Купить
-                            </button>
-                          )}
+                        <li key={h.name} className="hookah-card">
+                          <img src={h.img} alt={h.name} className="hookah-img"/>
+                          <div className="hookah-info">
+                            <div className="hookah-title">{h.name}</div>
+                            <div className="hookah-bonus">{h.bonus}</div>
+                            <div className="hookah-price">Цена: {getHookahCost(idx)}💨</div>
+                            {ownedHookahs.includes(h.name) ? (
+                              <span className="hookah-bought">Куплено ✅</span>
+                            ) : (
+                              <button className="buy-btn" onClick={()=>handleBuyHookah(h.name)} disabled={smoke < getHookahCost(idx)}>
+                                Купить
+                              </button>
+                            )}
+                          </div>
                         </li>
                       ))}
                     </ul>
