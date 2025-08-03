@@ -356,7 +356,10 @@ function App() {
           {shopOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
-                <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">✖️</button>
+                <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">
+                  <span style={{fontSize:'2.2rem',lineHeight:1}}>✖️</span>
+                  <span className="exit-label">Закрыть</span>
+                </button>
                 <div className="shop-tabs">
                   <button className={shopTab==='upgrades'?'active':''} onClick={()=>setShopTab('upgrades')}>Апгрейды</button>
                   <button className={shopTab==='hookahs'?'active':''} onClick={()=>setShopTab('hookahs')}>Кальяны</button>
@@ -486,10 +489,27 @@ function App() {
           )}
         </>
       )}
-      <audio src="https://cdn.pixabay.com/audio/2023/03/27/audio_12c6b6b1b2.mp3" autoPlay={musicPlaying} loop style={{display:'none'}}/>
-      <button onClick={()=>setMusicPlaying(p=>!p)} style={{position:'fixed',bottom:24,right:24,zIndex:1000,background:'#0f1e13cc',color:'#00ff99',border:'none',borderRadius:'50%',width:54,height:54,fontSize:28,boxShadow:'0 2px 8px #00ff9933',cursor:'pointer',transition:'background 0.2s'}} title={musicPlaying?'Остановить музыку':'Включить музыку'}>
+      {/* Кнопка музыки — фиксированная в правом верхнем углу */}
+      <button
+        onClick={() => setMusicPlaying(p => !p)}
+        className="music-btn"
+        style={{position:'fixed',top:18,right:18,zIndex:1000}}
+        title={musicPlaying?'Остановить музыку':'Включить музыку'}
+      >
         {musicPlaying ? '⏸️' : '🎵'}
       </button>
+      <audio
+        src="/Lofi Sleep Chill & Study - Love (zaycev.net).mp3"
+        autoPlay={false}
+        loop
+        ref={el => {
+          if (el) {
+            if (musicPlaying && el.paused) el.play().catch(()=>{});
+            if (!musicPlaying && !el.paused) el.pause();
+          }
+        }}
+        style={{display:'none'}}
+      />
       <footer className="footer">
         Made by <a href="https://t.me/P04KA" style={{color:'#00ff99',textDecoration:'none',fontWeight:700}} target="_blank" rel="noopener noreferrer">@P04KA</a>
       </footer>
