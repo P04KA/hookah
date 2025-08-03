@@ -264,6 +264,10 @@ function App() {
             <button className="smoke-btn" onClick={handleSmoke}>
               Курить кальян (+{smokePerClick})
             </button>
+            <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:'clamp(0.7rem,2vw,1.2rem)'}}>
+              <button className="shop-btn" onClick={()=>setShopOpen(true)} style={{minWidth:120}}>🛒 Магазин</button>
+              <button className="shop-btn" onClick={()=>setProfileOpen(true)} style={{minWidth:120}}>👤 Профиль</button>
+            </div>
             {smokeAnims.map((id, i) => {
               const size = 38 + Math.random()*18;
               const blur = 8 + Math.random()*10;
@@ -278,9 +282,6 @@ function App() {
               );
             })}
           </div>
-          <button className="shop-btn" onClick={() => setShopOpen(true)}>
-            🛒 Магазин
-          </button>
           {shopOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
@@ -301,7 +302,7 @@ function App() {
                           <div style={{fontSize:14,opacity:0.8}}>{h.bonus}</div>
                           <div style={{margin:'8px 0'}}>{h.cost}💨</div>
                           {ownedHookahs.includes(h.name) ? (
-                            <button disabled style={{background:'#222',color:'#0f0'}}>Куплено</button>
+                            <button disabled style={{background:'#222',color:'#00ff99'}}>Куплено</button>
                           ) : (
                             <button onClick={()=>handleBuyHookah(h.name)} disabled={smoke<h.cost}>Купить</button>
                           )}
@@ -359,7 +360,6 @@ function App() {
               </div>
             </div>
           )}
-          <button className="shop-btn" onClick={()=>setProfileOpen(true)} style={{marginTop:'clamp(0.7rem,2vw,1.2rem)',marginBottom:0}}>👤 Профиль</button>
           {profileOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
@@ -400,7 +400,7 @@ function App() {
                   <div className="top-players-title">Топ игроков</div>
                   <ul className="top-players-list">
                     {TOP_PLAYERS.map((p,i)=>(
-                      <li key={p.name}><span style={{fontWeight:'bold',color:'#ffcc33'}}>{i+1}.</span> {p.name} <span style={{color:'#888'}}>— {p.score}💨</span></li>
+                      <li key={p.name}><span style={{fontWeight:'bold',color:'#00ff99'}}>{i+1}.</span> {p.name} <span style={{color:'#888'}}>— {p.score}💨</span></li>
                     ))}
                   </ul>
                 </div>
@@ -410,7 +410,7 @@ function App() {
         </>
       )}
       <footer className="footer">
-        Made by <a href="https://t.me/P04KA" style={{color:'#ffcc33',textDecoration:'none',fontWeight:700}} target="_blank" rel="noopener noreferrer">@P04KA</a>
+        Made by <a href="https://t.me/P04KA" style={{color:'#00ff99',textDecoration:'none',fontWeight:700}} target="_blank" rel="noopener noreferrer">@P04KA</a>
       </footer>
     </div>
   );
