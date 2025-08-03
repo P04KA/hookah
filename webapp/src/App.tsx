@@ -42,7 +42,7 @@ function getTobaccoBonus(name: string, level: number): number {
 
 // Реальные картинки кальянов и табаков
 const HOOKAHS = [
-  { name: 'Alpha Hookah', img: 'https://i.imgur.com/6Qw1QwB.png', cost: 100, bonus: '+2 дыма за клик' },
+  { name: 'Alpha Hookah', img: './alpha_hookah.png', cost: 100, bonus: '+2 дыма за клик' },
   { name: 'Xhoob', img: 'https://w7.pngwing.com/pngs/813/547/png-transparent-golden-hookah-luxury-jewelry-hookah-smoke-fine-thumbnail.png', cost: 200, bonus: '+4 дыма за клик' },
   { name: 'Maklaud', img: 'https://i.imgur.com/2Qw1QwB.png', cost: 350, bonus: '+7 дыма за клик' },
   { name: 'Khalil Mamoon', img: 'https://i.imgur.com/3Qw1QwB.png', cost: 500, bonus: '+12 дыма за клик' },
@@ -74,6 +74,14 @@ const UPGRADE_LIST = [
   { name: '🤖 Автообновление кальяна', cost: 500, desc: '+2 дыма в минуту' },
 ];
 
+// PNG-облака для главного экрана
+const CLOUDS = [
+  'https://pngimg.com/uploads/smoke/smoke_PNG55217.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55218.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55219.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55220.png',
+];
+
 function App() {
   const [smoke, setSmoke] = useState(0);
   const [shopOpen, setShopOpen] = useState(false);
@@ -89,6 +97,9 @@ function App() {
   const [glowCard, setGlowCard] = useState<string|null>(null);
   const [level, setLevel] = useState(1);
   const [exp, setExp] = useState(0);
+  const [topPlayers, setTopPlayers] = useState<{username:string, smoke:number}[]>([]);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const username = window.Telegram?.WebApp?.initDataUnsafe?.user?.username || '';
 
   const smokePerClick = useMemo(() => {
     let base = 1;
@@ -154,12 +165,20 @@ function App() {
     return () => clearInterval(interval);
   }, [upgrades]);
 
-  // Реалистичный дым при клике
+  // Получение топа игроков
+  useEffect(() => {
+    fetch(`${API_URL}/top`).then(r=>r.json()).then(setTopPlayers);
+    const interval = setInterval(() => {
+      fetch(`${API_URL}/top`).then(r=>r.json()).then(setTopPlayers);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Реалистичный дым при клике + отправка username
   const handleSmoke = async () => {
     const newSmoke = smoke + smokePerClick;
     setSmoke(newSmoke);
     tg.HapticFeedback?.impactOccurred('medium');
-    // Несколько слоев дыма
     for (let i = 0; i < 3; i++) {
       setSmokeAnims(anims => [...anims, Date.now() + i*100]);
       setTimeout(() => {
@@ -169,7 +188,7 @@ function App() {
     await fetch(`${API_URL}/user/smoke`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: USER_ID, smoke: newSmoke })
+      body: JSON.stringify({ user_id: USER_ID, smoke: newSmoke, username })
     });
     // Лвл ап
     const nextExp = exp + smokePerClick;
@@ -221,6 +240,19 @@ function App() {
     });
   };
 
+  // Экономика: прогрессия цен апгрейдов и кальянов
+  function getUpgradeCost(idx:number) {
+    return Math.floor(20 * Math.pow(2, idx));
+  }
+  function getHookahCost(idx:number) {
+    return Math.floor(100 * Math.pow(2, idx));
+  }
+  // Unlock chain для апгрейдов
+  function canBuyUpgrade(idx:number) {
+    if (idx === 0) return !upgrades.includes(UPGRADE_LIST[0].name);
+    return upgrades.includes(UPGRADE_LIST[idx-1].name) && !upgrades.includes(UPGRADE_LIST[idx].name);
+  }
+
   return (
     <div className="App">
       <div className="bg-parallax"></div>
@@ -243,6 +275,27 @@ function App() {
         <svg className="bg-smoke-5" width="140" height="70" viewBox="0 0 140 70">
           <ellipse cx="70" cy="35" rx="60" ry="20" fill="#fff" />
         </svg>
+      </div>
+      {/* PNG-облака с анимацией */}
+      <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',pointerEvents:'none',zIndex:2}}>
+        {CLOUDS.map((src,i)=>(
+          <img key={src} src={src} alt="cloud" style={{
+            position:'absolute',
+            left:`${10+20*i}%`,
+            top:`${10+15*i}%`,
+            width:'clamp(80px,18vw,180px)',
+            opacity:0.18+0.08*i,
+            filter:'blur(2px)',
+            animation:`cloud-move${i} 32s linear infinite alternate`,
+            zIndex:2
+          }}/>
+        ))}
+        <style>{`
+          @keyframes cloud-move0 { 0%{transform:translateY(0);} 100%{transform:translateY(-40px);} }
+          @keyframes cloud-move1 { 0%{transform:translateY(0);} 100%{transform:translateY(-60px);} }
+          @keyframes cloud-move2 { 0%{transform:translateY(0);} 100%{transform:translateY(-30px);} }
+          @keyframes cloud-move3 { 0%{transform:translateY(0);} 100%{transform:translateY(-50px);} }
+        `}</style>
       </div>
       <header className="header">
         <h1>Тяга</h1>
@@ -303,23 +356,25 @@ function App() {
                   <div>
                     <h2>Кальяны</h2>
                     <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center'}}>
-                      {HOOKAHS.map(h=>
+                      {HOOKAHS.map((h,idx)=>(
                         <div key={h.name} className={`hookah-card${glowCard==='hookah-'+h.name?' glow':''}`}>
                           <img src={h.img} alt={h.name} />
                           <div style={{fontWeight:'bold',fontSize:18}}>{h.name}</div>
                           <div style={{fontSize:14,opacity:0.8}}>{h.bonus}</div>
-                          <div style={{margin:'8px 0'}}>{h.cost}💨</div>
+                          <div style={{margin:'8px 0'}}>{getHookahCost(idx)}💨</div>
                           {ownedHookahs.includes(h.name) ? (
                             <button disabled style={{background:'#222',color:'#00ff99'}}>Куплено</button>
                           ) : (
-                            <button onClick={()=>handleBuyHookah(h.name)} disabled={smoke<h.cost}>Купить</button>
+                            <button onClick={()=>handleBuyHookah(h.name)} disabled={smoke<getHookahCost(idx)}>
+                              Купить
+                            </button>
                           )}
                           {ownedHookahs.includes(h.name) && activeHookah!==h.name && (
                             <button onClick={()=>setActiveHookah(h.name)} style={{marginTop:4}}>Сделать активным</button>
                           )}
                           {activeHookah===h.name && <div className="active-label">Активный</div>}
                         </div>
-                      )}
+                      ))}
                     </div>
                   </div>
                 )}
@@ -351,12 +406,12 @@ function App() {
                     <ul>
                       {UPGRADE_LIST.map((item, idx) => (
                         <li key={item.name} style={{marginBottom: 8}}>
-                          <b>{item.name}</b> — {item.cost}💨<br/>
+                          <b>{item.name}</b> — {getUpgradeCost(idx)}💨<br/>
                           <i>{item.desc}</i><br/>
                           {upgrades.includes(item.name) ? (
                             <span style={{color: '#00ff99'}}>Куплено ✅</span>
                           ) : (
-                            <button onClick={() => handleBuy(idx)} disabled={smoke < item.cost}>
+                            <button onClick={() => canBuyUpgrade(idx) && handleBuy(idx)} disabled={smoke < getUpgradeCost(idx) || !canBuyUpgrade(idx)}>
                               Купить
                             </button>
                           )}
@@ -407,8 +462,8 @@ function App() {
                 <div className="top-players">
                   <div className="top-players-title">Топ игроков</div>
                   <ul className="top-players-list">
-                    {TOP_PLAYERS.map((p,i)=>(
-                      <li key={p.name}><span style={{fontWeight:'bold',color:'#00ff99'}}>{i+1}.</span> {p.name} <span style={{color:'#888'}}>— {p.score}💨</span></li>
+                    {topPlayers.map((p,i)=>(
+                      <li key={p.username}><span style={{fontWeight:'bold',color:'#00ff99'}}>{i+1}.</span> @{p.username || 'anon'} <span style={{color:'#888'}}>— {p.smoke}💨</span></li>
                     ))}
                   </ul>
                 </div>
@@ -417,6 +472,10 @@ function App() {
           )}
         </>
       )}
+      <audio src="https://cdn.pixabay.com/audio/2023/03/27/audio_12c6b6b1b2.mp3" autoPlay={musicPlaying} loop style={{display:'none'}}/>
+      <button onClick={()=>setMusicPlaying(p=>!p)} style={{position:'fixed',bottom:24,right:24,zIndex:1000,background:'#0f1e13cc',color:'#00ff99',border:'none',borderRadius:'50%',width:54,height:54,fontSize:28,boxShadow:'0 2px 8px #00ff9933',cursor:'pointer',transition:'background 0.2s'}} title={musicPlaying?'Остановить музыку':'Включить музыку'}>
+        {musicPlaying ? '⏸️' : '🎵'}
+      </button>
       <footer className="footer">
         Made by <a href="https://t.me/P04KA" style={{color:'#00ff99',textDecoration:'none',fontWeight:700}} target="_blank" rel="noopener noreferrer">@P04KA</a>
       </footer>
