@@ -1,57 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@700&display=swap');
 
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 body, html, #root, .App {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  background: linear-gradient(135deg, #232526 0%, #e0e0e0 100%);
-  color: #fff;
+  font-family: 'Inter', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e3e6ec 0%, #232526 100%);
+  color: #232526;
   overflow-x: hidden;
-}
-
-.App {
-  position: relative;
-  z-index: 1;
 }
 
 .bg-parallax {
@@ -59,91 +15,107 @@ body, html, #root, .App {
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 60% 20%, #fff2 0%, #232526 80%);
-  animation: parallax-bg 10s linear infinite alternate;
+  background: radial-gradient(ellipse at 60% 20%, #fff3 0%, #e3e6ec 80%);
+  animation: parallax-bg 12s linear infinite alternate;
 }
 @keyframes parallax-bg {
   0% { background-position: 60% 20%; }
   100% { background-position: 40% 80%; }
 }
-
+.bg-smoke svg {
+  filter: blur(18px) brightness(1.2);
+}
+.bg-smoke-1, .bg-smoke-2, .bg-smoke-3, .bg-smoke-4, .bg-smoke-5 {
+  opacity: 0.10;
+  animation: bgSmokeMove 32s linear infinite;
+}
+@keyframes bgSmokeMove {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-80px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
 .header {
   text-align: center;
-  margin-top: 24px;
-  color: #fff;
-  text-shadow: 0 2px 16px #000a;
+  margin-top: clamp(1.5rem, 4vw, 3.5rem);
+  color: #232526;
+  text-shadow: 0 2px 24px #fff8;
 }
-
 .header h1 {
   font-family: 'Montserrat', 'Inter', Arial, sans-serif;
   font-weight: 700;
-  font-size: 2.5rem;
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
   letter-spacing: 0.04em;
   margin-bottom: 0.2em;
+  background: linear-gradient(90deg, #232526 0%, #ffcc33 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-
 .counter-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 32px 0 16px 0;
+  margin: clamp(1.5rem, 5vw, 3.5rem) 0 clamp(0.5rem, 2vw, 1.5rem) 0;
   position: relative;
 }
-
 .smoke-count {
-  font-size: 2.7rem;
-  margin-bottom: 16px;
-  font-weight: bold;
-  text-shadow: 0 2px 16px #000a;
-  color: #fff;
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  margin-bottom: 18px;
+  font-weight: 700;
+  text-shadow: 0 2px 24px #fff8;
+  color: #232526;
   animation: fadeInSmoke 1.2s;
+  letter-spacing: 0.03em;
 }
-
-.smoke-btn {
-  background: linear-gradient(90deg, #fff 0%, #e0e0e0 100%);
+@keyframes fadeInSmoke {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+.balance-bar {
+  width: clamp(180px, 60vw, 420px);
+  height: 14px;
+  background: #e3e6ec;
+  border-radius: 8px;
+  margin: 0 auto 18px auto;
+  overflow: hidden;
+  box-shadow: 0 1px 8px #fff3, 0 1px 8px #0001;
+}
+.balance-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #ffcc33 0%, #232526 100%);
+  border-radius: 8px;
+  transition: width 0.7s cubic-bezier(.4,2,.6,1);
+}
+.shop-btn, .smoke-btn {
+  font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #fff 0%, #e3e6ec 100%);
   color: #232526;
   border: none;
   border-radius: 32px;
-  font-size: 1.4rem;
-  padding: 18px 44px;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  padding: clamp(0.7rem, 2vw, 1.2rem) clamp(2.2rem, 7vw, 3.5rem);
   font-weight: bold;
-  box-shadow: 0 6px 24px #0003;
+  box-shadow: 0 6px 24px #fff3, 0 2px 8px #0001;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
   margin-bottom: 8px;
   animation: fadeInUp 0.7s;
 }
-.smoke-btn:active {
-  background: linear-gradient(90deg, #e0e0e0 0%, #fff 100%);
+.shop-btn:active, .smoke-btn:active {
+  background: linear-gradient(90deg, #e3e6ec 0%, #fff 100%);
   transform: scale(0.97);
-  box-shadow: 0 2px 8px #0002;
+  box-shadow: 0 2px 8px #fff2;
 }
-
-.shop-btn {
-  margin: 0 auto 24px auto;
-  display: block;
-  background: linear-gradient(90deg, #fff 0%, #e0e0e0 100%);
+.shop-btn:hover, .smoke-btn:hover {
+  background: linear-gradient(90deg, #ffcc33 0%, #fff 100%);
   color: #232526;
-  border: 2px solid #fff;
-  border-radius: 24px;
-  font-size: 1.1rem;
-  padding: 12px 36px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px #0002;
-  animation: fadeInUp 0.8s;
 }
-.shop-btn:hover {
-  background: #232526;
-  color: #fff;
-  border-color: #ffcc33;
-}
-
 .shop-modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(30,30,30,0.85);
+  background: rgba(243,243,243,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,20 +123,23 @@ body, html, #root, .App {
   animation: fadeIn 0.4s;
 }
 .shop-content {
-  background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-  border-radius: 28px;
-  padding: 36px 28px 28px 28px;
-  min-width: 320px;
-  max-width: 95vw;
-  box-shadow: 0 8px 32px #000a;
+  background: linear-gradient(135deg, #fff 60%, #e3e6ec 100%);
+  border-radius: 32px;
+  padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1.2rem, 4vw, 2.5rem) clamp(1.2rem, 4vw, 2.5rem) clamp(1.2rem, 4vw, 2.5rem);
+  min-width: clamp(260px, 60vw, 480px);
+  max-width: 98vw;
+  box-shadow: 0 8px 32px #fff6, 0 2px 8px #0001;
   text-align: center;
   color: #232526;
   animation: fadeInUp 0.7s;
+  position: relative;
 }
 .shop-content h2 {
   margin-top: 0;
   color: #232526;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: clamp(1.3rem, 4vw, 2.1rem);
+  letter-spacing: 0.03em;
 }
 .shop-content ul {
   list-style: none;
@@ -181,11 +156,12 @@ body, html, #root, .App {
   color: #fff;
   border: none;
   border-radius: 16px;
-  padding: 8px 22px;
+  padding: 10px 28px;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px #0002;
+  box-shadow: 0 2px 8px #fff2;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 .shop-content button:disabled {
   background: #aaa;
@@ -199,12 +175,12 @@ body, html, #root, .App {
   margin-bottom: 16px;
 }
 .shop-tabs button {
-  background: #232526;
-  color: #ffcc33;
+  background: #e3e6ec;
+  color: #232526;
   border: 2px solid #ffcc33;
   border-radius: 16px;
-  font-size: 1rem;
-  padding: 6px 18px;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  padding: 8px 22px;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
@@ -215,38 +191,40 @@ body, html, #root, .App {
 }
 .hookah-card, .tobacco-card {
   background: rgba(255,255,255,0.85);
-  border-radius: 20px;
-  padding: 16px;
-  min-width: 180px;
-  max-width: 220px;
+  border-radius: 24px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  min-width: clamp(140px, 30vw, 220px);
+  max-width: clamp(180px, 40vw, 260px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 24px #0002;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 24px #fff3, 0 2px 8px #0001;
   position: relative;
   animation: fadeInUp 0.7s;
+  border: 1.5px solid #e3e6ec;
 }
 .hookah-card img, .tobacco-card img {
-  width: 120px;
-  height: 120px;
+  width: clamp(60px, 18vw, 120px);
+  height: clamp(60px, 18vw, 120px);
   object-fit: contain;
-  border-radius: 14px;
+  border-radius: 16px;
   margin-bottom: 10px;
   background: #fff;
-  box-shadow: 0 2px 8px #0001;
+  box-shadow: 0 2px 8px #fff2;
 }
 .hookah-card button, .tobacco-card button {
-  margin-top: 8px;
+  margin-top: 10px;
   background: linear-gradient(90deg, #232526 0%, #ffcc33 100%);
   color: #fff;
   border: none;
-  border-radius: 12px;
-  padding: 8px 22px;
+  border-radius: 14px;
+  padding: 10px 28px;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px #0002;
+  box-shadow: 0 2px 8px #fff2;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 .hookah-card button:disabled, .tobacco-card button:disabled {
   background: #aaa;
@@ -258,102 +236,42 @@ body, html, #root, .App {
   margin-top: 4px;
   font-weight: bold;
 }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.smoke-anim {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  pointer-events: none;
-  animation: smoke-fade 1.2s ease-out forwards;
-  z-index: 10;
-}
-@keyframes smoke-fade {
-  0% {
-    opacity: 0.7;
-    transform: translateX(-50%) scale(1) translateY(0);
-  }
-  60% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.2) translateY(-30px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50%) scale(1.4) translateY(-70px);
-  }
-}
-.footer {
-  text-align: center;
-  margin: 32px 0 0 0;
-  color: #ffcc33;
-  font-size: 1rem;
-  opacity: 0.7;
-}
-
 .glow {
-  box-shadow: 0 0 32px 8px #ffcc33cc, 0 4px 24px #0002 !important;
+  box-shadow: 0 0 32px 8px #ffcc33cc, 0 4px 24px #fff3 !important;
   animation: glow-pop 0.9s;
 }
 @keyframes glow-pop {
-  0% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #0002; }
-  40% { box-shadow: 0 0 32px 12px #ffcc33cc, 0 4px 24px #0002; }
-  100% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #0002; }
+  0% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #fff3; }
+  40% { box-shadow: 0 0 32px 12px #ffcc33cc, 0 4px 24px #fff3; }
+  100% { box-shadow: 0 0 0 0 #ffcc3300, 0 4px 24px #fff3; }
 }
 .shop-content, .hookah-card, .tobacco-card {
-  backdrop-filter: blur(6px) saturate(1.2);
-  background: linear-gradient(135deg, #fff9 60%, #e0e0e099 100%);
+  backdrop-filter: blur(10px) saturate(1.2);
+  background: linear-gradient(135deg, #fff9 60%, #e3e6ec99 100%);
 }
-
-.bg-smoke {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.bg-smoke-1, .bg-smoke-2, .bg-smoke-3 {
+.shop-exit-btn, .profile-exit-btn {
   position: absolute;
-  opacity: 0.18;
-  filter: blur(8px);
-  animation: bgSmokeMove 24s linear infinite;
-}
-.bg-smoke-2 {
-  left: 60vw;
-  top: 30vh;
-  opacity: 0.13;
-  animation-duration: 32s;
-  animation-delay: 4s;
-}
-.bg-smoke-3 {
-  left: 20vw;
-  top: 60vh;
-  opacity: 0.10;
-  animation-duration: 40s;
-  animation-delay: 8s;
-}
-@keyframes bgSmokeMove {
-  0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-60px) scale(1.1); }
-  100% { transform: translateY(0) scale(1); }
-}
-.smoke-count {
-  font-size: 2.7rem;
-  margin-bottom: 16px;
-  font-weight: bold;
-  text-shadow: 0 2px 16px #000a;
+  top: 18px;
+  right: 18px;
+  background: #232526cc;
   color: #fff;
-  animation: fadeInSmoke 1.2s;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.7rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #fff2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 10;
 }
-@keyframes fadeInSmoke {
-  from { opacity: 0; transform: scale(0.7); }
-  to { opacity: 1; transform: scale(1); }
+.shop-exit-btn:hover, .profile-exit-btn:hover {
+  background: #ffcc33;
+  color: #232526;
 }
 .achievements {
   margin: 18px 0 0 0;
@@ -366,13 +284,13 @@ body, html, #root, .App {
   background: linear-gradient(90deg, #fff 0%, #ffcc33 100%);
   color: #232526;
   border-radius: 12px;
-  padding: 6px 16px;
+  padding: 8px 18px;
   font-weight: bold;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px #0002;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  box-shadow: 0 2px 8px #fff2;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   animation: fadeInUp 0.7s;
 }
 .top-players {
@@ -381,7 +299,7 @@ body, html, #root, .App {
   border-radius: 16px;
   padding: 12px 18px;
   color: #232526;
-  box-shadow: 0 2px 8px #0001;
+  box-shadow: 0 2px 8px #fff2;
   max-width: 340px;
   margin-left: auto;
   margin-right: auto;
@@ -391,6 +309,7 @@ body, html, #root, .App {
   font-weight: bold;
   margin-bottom: 8px;
   color: #ffcc33;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
 }
 .top-players-list {
   list-style: none;
@@ -399,69 +318,24 @@ body, html, #root, .App {
 }
 .top-players-list li {
   margin-bottom: 4px;
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
-.tobacco-bar {
-  width: 100%;
-  height: 12px;
-  background: #e0e0e0;
-  border-radius: 8px;
-  margin: 8px 0 4px 0;
-  overflow: hidden;
-  box-shadow: 0 1px 4px #0001;
+.footer {
+  text-align: center;
+  margin: clamp(2rem, 6vw, 3.5rem) 0 0 0;
+  color: #ffcc33;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  opacity: 0.8;
+  letter-spacing: 0.04em;
+  font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+  font-weight: 700;
 }
-.tobacco-bar-inner {
-  height: 100%;
-  background: linear-gradient(90deg, #ffcc33 0%, #fff 100%);
-  border-radius: 8px;
-  transition: width 0.5s cubic-bezier(.4,2,.6,1);
-}
-.balance-bar {
-  width: 80%;
-  height: 10px;
-  background: #fff3;
-  border-radius: 6px;
-  margin: 0 auto 12px auto;
-  overflow: hidden;
-}
-.balance-bar-inner {
-  height: 100%;
-  background: linear-gradient(90deg, #ffcc33 0%, #fff 100%);
-  border-radius: 6px;
-  transition: width 0.7s cubic-bezier(.4,2,.6,1);
-}
-.shop-exit-btn {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  background: #232526cc;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 8px #0003;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  z-index: 10;
-}
-.shop-exit-btn:hover {
-  background: #ffcc33;
-  color: #232526;
-}
-
 @media (max-width: 600px) {
   .shop-content {
-    min-width: 95vw;
+    min-width: 98vw;
     padding: 18px 4vw 18px 4vw;
   }
   .smoke-btn {
@@ -469,7 +343,7 @@ body, html, #root, .App {
     padding: 12px 10vw;
   }
   .hookah-card img, .tobacco-card img {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
   }
 }

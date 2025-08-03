@@ -204,8 +204,8 @@ function App() {
         </svg>
       </div>
       <header className="header">
-        <span role="img" aria-label="hookah" style={{fontSize: 32}}>💨</span>
-        <h1>Кальян Кликер</h1>
+        <h1>Тяга</h1>
+        <span role="img" aria-label="hookah" style={{fontSize: 'clamp(2rem, 6vw, 3.5rem)'}}>💨</span>
       </header>
       {loading ? (
         <div>Загрузка...</div>
@@ -308,10 +308,11 @@ function App() {
               </div>
             </div>
           )}
-          <button className="shop-btn" onClick={()=>setProfileOpen(true)} style={{marginTop:8,marginBottom:0}}>👤 Профиль</button>
+          <button className="shop-btn" onClick={()=>setProfileOpen(true)} style={{marginTop:'clamp(0.7rem,2vw,1.2rem)',marginBottom:0}}>👤 Профиль</button>
           {profileOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
-              <div className="shop-content" style={{animation:'fadeInUp 0.7s'}}>
+              <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
+                <button className="profile-exit-btn" onClick={()=>setProfileOpen(false)} title="Выйти из профиля">✖️</button>
                 <h2>Профиль</h2>
                 <div style={{marginBottom:12}}>
                   <b>Дым:</b> {smoke} 💨
@@ -352,14 +353,13 @@ function App() {
                     ))}
                   </ul>
                 </div>
-                <button onClick={()=>setProfileOpen(false)}>Закрыть</button>
               </div>
             </div>
           )}
         </>
       )}
       <footer className="footer">
-        <span>by Hookah Clicker</span>
+        Made by <a href="https://t.me/P04KA" style={{color:'#ffcc33',textDecoration:'none',fontWeight:700}} target="_blank" rel="noopener noreferrer">@P04KA</a>
       </footer>
     </div>
   );
