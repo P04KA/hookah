@@ -327,9 +327,10 @@ function App() {
             <div className="balance-bar">
               <div className="balance-bar-inner" style={{width: Math.min(100, Math.sqrt(smoke)*10) + '%'}}></div>
             </div>
+            {/* Прогресс-бар уровня под счётчиком */}
             <div style={{margin:'8px 0', color:'#00ff99', fontWeight:700, fontSize:'clamp(1rem,2vw,1.2rem)'}}>Уровень: {level} <span style={{color:'#e6ffe6',fontWeight:400}}>({exp}/{level*100})</span></div>
-            <div className="balance-bar" style={{height:10,margin:'0 auto 8px auto'}}>
-              <div className="balance-bar-inner" style={{width: (exp/level/100*100)+'%', background:'linear-gradient(90deg,#00ff99,#e6ffe6)'}}></div>
+            <div className="level-bar">
+              <div className="level-bar-inner" style={{width: (exp/level/100*100)+'%'}}></div>
             </div>
             <button className="smoke-btn" onClick={handleSmoke}>
               Курить кальян (+{smokePerClick})
@@ -357,30 +358,10 @@ function App() {
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
                 <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">✖️</button>
                 <div className="shop-tabs">
-                  <button onClick={()=>setShopTab('upgrades')} aria-selected={shopTab==='upgrades'} className={shopTab==='upgrades'?'active':''}>Апгрейды</button>
-                  <button onClick={()=>setShopTab('hookahs')} aria-selected={shopTab==='hookahs'} className={shopTab==='hookahs'?'active':''}>Кальяны</button>
-                  <button onClick={()=>setShopTab('tobaccos')} aria-selected={shopTab==='tobaccos'} className={shopTab==='tobaccos'?'active':''}>Табаки</button>
+                  <button className={shopTab==='upgrades'?'active':''} onClick={()=>setShopTab('upgrades')}>Апгрейды</button>
+                  <button className={shopTab==='hookahs'?'active':''} onClick={()=>setShopTab('hookahs')}>Кальяны</button>
+                  <button className={shopTab==='tobaccos'?'active':''} onClick={()=>setShopTab('tobaccos')}>Табаки</button>
                 </div>
-                {shopTab==='upgrades' && (
-                  <div>
-                    <h2>Апгрейды</h2>
-                    <ul className="upgrades-list">
-                      {UPGRADE_LIST.map((item, idx) => (
-                        <li key={item.name} style={{marginBottom: 8}}>
-                          <b>{item.name}</b> — {getUpgradeCost(idx)}💨<br/>
-                          <i>{item.desc}</i><br/>
-                          {upgrades.includes(item.name) ? (
-                            <span style={{color: '#00ff99'}}>Куплено ✅</span>
-                          ) : (
-                            <button className="buy-btn" onClick={() => handleBuy(idx)} disabled={smoke < getUpgradeCost(idx) || !canBuyUpgrade(idx)}>
-                              Купить
-                            </button>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
                 {shopTab==='hookahs' && (
                   <div>
                     <h2>Кальяны</h2>
@@ -410,15 +391,44 @@ function App() {
                     <h2>Табаки</h2>
                     <ul className="tobaccos-list">
                       {TOBACCOS.map((t, idx) => (
-                        <li key={t.name} style={{marginBottom: 8}}>
-                          <img src={t.img} alt={t.name} style={{width:40,height:40,objectFit:'contain',borderRadius:8,background:'#0f1e13',marginBottom:4}}/>
-                          <div style={{fontWeight:600}}>{t.name}</div>
-                          <div style={{fontSize:'0.95em',color:'#00ff99'}}>{t.bonus}</div>
-                          <div style={{fontSize:'0.95em'}}>Уровень: {tobaccoLevels[t.name] || 0}/{t.maxLevel}</div>
-                          <div style={{fontSize:'0.95em'}}>Цена: {getTobaccoCost(idx)}💨</div>
-                          <button className="buy-btn" onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke < getTobaccoCost(idx) || (tobaccoLevels[t.name]||0) >= t.maxLevel}>
-                            {tobaccoLevels[t.name] >= t.maxLevel ? 'Макс' : 'Купить'}
-                          </button>
+                        <li key={t.name} className="tobacco-card">
+                          <img src={t.img} alt={t.name} className="tobacco-img"/>
+                          <div className="tobacco-info">
+                            <div className="tobacco-title">{t.name}</div>
+                            <div className="tobacco-bonus">{t.bonus}</div>
+                            <div className="tobacco-price">Цена: {getTobaccoCost(idx)}💨</div>
+                            <div style={{fontSize:'0.92em'}}>Уровень: {tobaccoLevels[idx] || 0}/{t.maxLevel}</div>
+                            <div className="tobacco-bar">
+                              <div className="tobacco-bar-inner" style={{width: `${((tobaccoLevels[idx]||0)/t.maxLevel*100)}%`}}></div>
+                            </div>
+                            <button className="buy-btn" onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke < getTobaccoCost(idx) || (tobaccoLevels[idx]||0) >= t.maxLevel}>
+                              {tobaccoLevels[idx] >= t.maxLevel ? 'Макс' : 'Купить'}
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {shopTab==='upgrades' && (
+                  <div>
+                    <h2>Апгрейды</h2>
+                    <ul className="upgrades-list">
+                      {UPGRADE_LIST.map((item, idx) => (
+                        <li key={item.name} className="upgrade-card">
+                          <img src={(item as any).img || 'https://pngimg.com/d/hookah_PNG6.png'} alt={item.name} className="upgrade-img"/>
+                          <div className="upgrade-info">
+                            <div className="upgrade-title">{item.name}</div>
+                            <div className="upgrade-bonus">{item.desc}</div>
+                            <div className="upgrade-price">Цена: {getUpgradeCost(idx)}💨</div>
+                            {upgrades.includes(item.name) ? (
+                              <span className="upgrade-bought">Куплено ✅</span>
+                            ) : (
+                              <button className="buy-btn" onClick={() => handleBuy(idx)} disabled={smoke < getUpgradeCost(idx) || !canBuyUpgrade(idx)}>
+                                Купить
+                              </button>
+                            )}
+                          </div>
                         </li>
                       ))}
                     </ul>
