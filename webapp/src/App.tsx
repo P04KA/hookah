@@ -108,6 +108,8 @@ function App() {
   const [topPlayers, setTopPlayers] = useState<{username:string, smoke:number}[]>([]);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const username = window.Telegram?.WebApp?.initDataUnsafe?.user?.username || '';
+  const [smokeBtnGlow, setSmokeBtnGlow] = useState(false);
+  const [hookahGlow, setHookahGlow] = useState(false);
 
   const smokePerClick = useMemo(() => {
     let base = 1;
@@ -184,6 +186,10 @@ function App() {
 
   // Реалистичный дым при клике + отправка username
   const handleSmoke = async () => {
+    setSmokeBtnGlow(true);
+    setHookahGlow(true);
+    setTimeout(() => setSmokeBtnGlow(false), 700);
+    setTimeout(() => setHookahGlow(false), 700);
     const newSmoke = smoke + smokePerClick;
     setSmoke(newSmoke);
     tg.HapticFeedback?.impactOccurred('medium');
@@ -333,6 +339,7 @@ function App() {
                 src={HOOKAHS.find(h=>h.name===activeHookah)?.img}
                 alt={activeHookah}
                 style={{width:'clamp(90px,22vw,160px)',height:'clamp(90px,22vw,160px)',objectFit:'contain',borderRadius:'22px',boxShadow:'0 8px 32px #00ff9955',background:'#0f1e13',marginBottom:8,transition:'all 0.4s cubic-bezier(.4,2,.6,1)'}}
+                className={hookahGlow ? 'hookah-glow' : ''}
               />
               <div style={{color:'#00ff99',fontWeight:700,fontSize:'clamp(1.1rem,2vw,1.3rem)',textShadow:'0 2px 12px #0a0f0c'}}>{activeHookah}</div>
             </div>
@@ -345,7 +352,7 @@ function App() {
             <div className="level-bar">
               <div className="level-bar-inner" style={{width: (exp/level/100*100)+'%'}}></div>
             </div>
-            <button className="smoke-btn" onClick={handleSmoke}>
+            <button className={`smoke-btn${smokeBtnGlow ? ' glow' : ''}`} onClick={handleSmoke}>
               Курить кальян (+{smokePerClick})
             </button>
             <div style={{display:'flex',gap:12,justifyContent:'center',marginTop:'clamp(0.7rem,2vw,1.2rem)'}}>
