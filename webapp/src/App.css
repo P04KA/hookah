@@ -34,11 +34,17 @@ body, html, #root, .App {
   50% { transform: translateY(-100px) scale(1.1); }
   100% { transform: translateY(0) scale(1); }
 }
+@keyframes smoke-float {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  80% { opacity: 0.7; }
+  100% { transform: translateY(-90px) scale(1.15); opacity: 0; }
+}
 .header {
-  text-align: center;
-  margin-top: clamp(1.5rem, 4vw, 3.5rem);
-  color: #e6ffe6;
-  text-shadow: 0 2px 24px #0a0f0c;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15,30,19,0.85);
+  backdrop-filter: blur(6px);
 }
 .header h1 {
   font-family: 'Montserrat', 'Inter', Arial, sans-serif;

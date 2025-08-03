@@ -74,11 +74,11 @@ const TOP_PLAYERS = [
 
 // Новые апгрейды
 const UPGRADE_LIST = [
-  { name: '🔥 Зеленый уголь', cost: 20, desc: '+2 дыма за клик' },
-  { name: '💧 Турбо-колба', cost: 60, desc: '+5 дыма за клик' },
-  { name: '🌪️ Двойная тяга', cost: 150, desc: 'x2 дым за клик на 30 сек' },
-  { name: '🍃 Премиум табак', cost: 300, desc: '+10 дыма за клик' },
-  { name: '🤖 Автообновление кальяна', cost: 500, desc: '+2 дыма в минуту' },
+  { name: '🔥 Зеленый уголь', cost: 300, desc: '+2 дыма за клик' },
+  { name: '💧 Турбо-колба', cost: 900, desc: '+5 дыма за клик' },
+  { name: '🌪️ Двойная тяга', cost: 2250, desc: 'x2 дым за клик на 30 сек' },
+  { name: '🍃 Премиум табак', cost: 4500, desc: '+10 дыма за клик' },
+  { name: '🤖 Автообновление кальяна', cost: 7500, desc: '+2 дыма в минуту' },
 ];
 
 // PNG-облака для главного экрана
@@ -87,6 +87,18 @@ const CLOUDS = [
   'https://pngimg.com/uploads/smoke/smoke_PNG55218.png',
   'https://pngimg.com/uploads/smoke/smoke_PNG55219.png',
   'https://pngimg.com/uploads/smoke/smoke_PNG55220.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55221.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55222.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55223.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55224.png',
+];
+const SMOKE_PNGS = [
+  'https://pngimg.com/uploads/smoke/smoke_PNG55217.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55218.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55219.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55220.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55221.png',
+  'https://pngimg.com/uploads/smoke/smoke_PNG55222.png',
 ];
 
 function App() {
@@ -250,17 +262,22 @@ function App() {
     if (level >= TOBACCOS[idx].maxLevel) return; // Уже максимальный уровень
     const cost = getTobaccoCost(idx);
     if (smoke < cost) return; // Не хватает дыма
-    const newLevels = [...tobaccoLevels];
-    newLevels[idx] = level + 1;
-    setTobaccoLevels(newLevels);
-    setSmoke(s => s - cost);
-    // Сохраняем на сервере
-    await fetch(`${API_URL}/user/smoke`, {
+    // Новый серверный запрос
+    const res = await fetch(`${API_URL}/shop/buy_tobacco`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: USER_ID, smoke: smoke - cost, username })
+      body: JSON.stringify({ user_id: USER_ID, tobacco_idx: idx })
     });
-    // Можно добавить сохранение уровня табака на сервере, если реализовано
+    if (res.ok) {
+      const data = await res.json();
+      const newLevels = [...tobaccoLevels];
+      newLevels[idx] = data.new_level;
+      setTobaccoLevels(newLevels);
+      setSmoke(data.new_smoke);
+    } else {
+      const err = await res.json();
+      alert(err.detail || 'Ошибка покупки табака');
+    }
   };
 
   // Экономика: прогрессия цен апгрейдов и кальянов
@@ -325,8 +342,8 @@ function App() {
           @keyframes cloud-move3 { 0%{transform:translateY(0);} 100%{transform:translateY(-50px);} }
         `}</style>
       </div>
-      <header className="header">
-        <h1>Тяга</h1>
+      <header className="header" style={{position:'sticky',top:0,zIndex:100,background:'rgba(15,30,19,0.85)',backdropFilter:'blur(6px)'}}>
+        <h1 style={{margin:0}}>Тяга</h1>
         <span role="img" aria-label="hookah" style={{fontSize: 'clamp(2rem, 6vw, 3.5rem)'}}>💨</span>
       </header>
       {loading ? (
@@ -364,7 +381,25 @@ function App() {
               const blur = 8 + Math.random()*10;
               const left = `calc(50% + ${Math.sin(id%360)*18 + (Math.random()-0.5)*30}px)`;
               const opacity = 0.5 + Math.random()*0.4;
-              return (
+              const usePng = Math.random() < 0.5;
+              const pngSrc = SMOKE_PNGS[Math.floor(Math.random()*SMOKE_PNGS.length)];
+              return usePng ? (
+                <img
+                  key={id}
+                  src={pngSrc}
+                  alt="smoke"
+                  style={{
+                    position:'absolute',
+                    left,
+                    bottom: 120 + Math.random()*40,
+                    width: size+24,
+                    height: size+24,
+                    opacity,
+                    filter:`blur(${blur/2}px)`,
+                    pointerEvents:'none',
+                    animation: `smoke-float 1.4s linear forwards`}}
+                />
+              ) : (
                 <svg key={id} className="smoke-anim" width={size} height={size} viewBox="0 0 48 48" style={{left, filter:`blur(${blur}px)`, opacity}}>
                   <ellipse cx="24" cy="24" rx="16" ry="10" fill="#e6ffe6" />
                   <ellipse cx="32" cy="18" rx="8" ry="6" fill="#00ff99" opacity="0.5"/>
