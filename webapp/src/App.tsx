@@ -65,6 +65,15 @@ const TOP_PLAYERS = [
   { name: 'AlphaUser', score: 7777 },
 ];
 
+// Новые апгрейды
+const UPGRADE_LIST = [
+  { name: '🔥 Зеленый уголь', cost: 20, desc: '+2 дыма за клик' },
+  { name: '💧 Турбо-колба', cost: 60, desc: '+5 дыма за клик' },
+  { name: '🌪️ Двойная тяга', cost: 150, desc: 'x2 дым за клик на 30 сек' },
+  { name: '🍃 Премиум табак', cost: 300, desc: '+10 дыма за клик' },
+  { name: '🤖 Автообновление кальяна', cost: 500, desc: '+2 дыма в минуту' },
+];
+
 function App() {
   const [smoke, setSmoke] = useState(0);
   const [shopOpen, setShopOpen] = useState(false);
@@ -78,6 +87,8 @@ function App() {
   const [tobaccoLevels, setTobaccoLevels] = useState<{[name:string]:number}>({});
   const [profileOpen, setProfileOpen] = useState(false);
   const [glowCard, setGlowCard] = useState<string|null>(null);
+  const [level, setLevel] = useState(1);
+  const [exp, setExp] = useState(0);
 
   const smokePerClick = useMemo(() => {
     let base = 1;
@@ -106,6 +117,26 @@ function App() {
     fetchData();
   }, []);
 
+  // Сохранение прогресса
+  useEffect(() => {
+    const saved = localStorage.getItem('hookah-progress');
+    if (saved) {
+      const data = JSON.parse(saved);
+      setSmoke(data.smoke || 0);
+      setUpgrades(data.upgrades || []);
+      setOwnedHookahs(data.ownedHookahs || []);
+      setActiveHookah(data.activeHookah || 'Alpha Hookah');
+      setTobaccoLevels(data.tobaccoLevels || {});
+      setLevel(data.level || 1);
+      setExp(data.exp || 0);
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('hookah-progress', JSON.stringify({
+      smoke, upgrades, ownedHookahs, activeHookah, tobaccoLevels, level, exp
+    }));
+  }, [smoke, upgrades, ownedHookahs, activeHookah, tobaccoLevels, level, exp]);
+
   // Автокальян: если куплен, каждую минуту +1 дым
   useEffect(() => {
     if (!upgrades.includes('🤖 Автокальян')) return;
@@ -123,21 +154,31 @@ function App() {
     return () => clearInterval(interval);
   }, [upgrades]);
 
-  // Кликер: увеличить дым и отправить на backend + анимация дыма
+  // Реалистичный дым при клике
   const handleSmoke = async () => {
     const newSmoke = smoke + smokePerClick;
     setSmoke(newSmoke);
     tg.HapticFeedback?.impactOccurred('medium');
-    // Добавить анимацию дыма
-    setSmokeAnims(anims => [...anims, Date.now()]);
-    setTimeout(() => {
-      setSmokeAnims(anims => anims.slice(1));
-    }, 1200);
+    // Несколько слоев дыма
+    for (let i = 0; i < 3; i++) {
+      setSmokeAnims(anims => [...anims, Date.now() + i*100]);
+      setTimeout(() => {
+        setSmokeAnims(anims => anims.slice(1));
+      }, 1400 + i*120);
+    }
     await fetch(`${API_URL}/user/smoke`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id: USER_ID, smoke: newSmoke })
     });
+    // Лвл ап
+    const nextExp = exp + smokePerClick;
+    if (nextExp >= level*100) {
+      setLevel(level+1);
+      setExp(nextExp-level*100);
+    } else {
+      setExp(nextExp);
+    }
   };
 
   // Покупка апгрейда
@@ -216,16 +257,26 @@ function App() {
             <div className="balance-bar">
               <div className="balance-bar-inner" style={{width: Math.min(100, Math.sqrt(smoke)*10) + '%'}}></div>
             </div>
+            <div style={{margin:'8px 0', color:'#00ff99', fontWeight:700, fontSize:'clamp(1rem,2vw,1.2rem)'}}>Уровень: {level} <span style={{color:'#e6ffe6',fontWeight:400}}>({exp}/{level*100})</span></div>
+            <div className="balance-bar" style={{height:10,margin:'0 auto 8px auto'}}>
+              <div className="balance-bar-inner" style={{width: (exp/level/100*100)+'%', background:'linear-gradient(90deg,#00ff99,#e6ffe6)'}}></div>
+            </div>
             <button className="smoke-btn" onClick={handleSmoke}>
               Курить кальян (+{smokePerClick})
             </button>
-            {smokeAnims.map((id, i) => (
-              <svg key={id} className="smoke-anim" width="48" height="48" viewBox="0 0 48 48" style={{left:`calc(50% + ${Math.sin(id%360)*10}px)`}}>
-                <ellipse cx="24" cy="24" rx="16" ry="10" fill="white" opacity="0.7"/>
-                <ellipse cx="32" cy="18" rx="8" ry="6" fill="white" opacity="0.5"/>
-                <ellipse cx="16" cy="20" rx="7" ry="5" fill="white" opacity="0.4"/>
-              </svg>
-            ))}
+            {smokeAnims.map((id, i) => {
+              const size = 38 + Math.random()*18;
+              const blur = 8 + Math.random()*10;
+              const left = `calc(50% + ${Math.sin(id%360)*18 + (Math.random()-0.5)*30}px)`;
+              const opacity = 0.5 + Math.random()*0.4;
+              return (
+                <svg key={id} className="smoke-anim" width={size} height={size} viewBox="0 0 48 48" style={{left, filter:`blur(${blur}px)`, opacity}}>
+                  <ellipse cx="24" cy="24" rx="16" ry="10" fill="#e6ffe6" />
+                  <ellipse cx="32" cy="18" rx="8" ry="6" fill="#00ff99" opacity="0.5"/>
+                  <ellipse cx="16" cy="20" rx="7" ry="5" fill="#00ff99" opacity="0.3"/>
+                </svg>
+              );
+            })}
           </div>
           <button className="shop-btn" onClick={() => setShopOpen(true)}>
             🛒 Магазин
@@ -289,12 +340,12 @@ function App() {
                   <div>
                     <h2>Апгрейды</h2>
                     <ul>
-                      {shopItems.map((item, idx) => (
+                      {UPGRADE_LIST.map((item, idx) => (
                         <li key={item.name} style={{marginBottom: 8}}>
                           <b>{item.name}</b> — {item.cost}💨<br/>
                           <i>{item.desc}</i><br/>
                           {upgrades.includes(item.name) ? (
-                            <span style={{color: 'green'}}>Куплено ✅</span>
+                            <span style={{color: '#00ff99'}}>Куплено ✅</span>
                           ) : (
                             <button onClick={() => handleBuy(idx)} disabled={smoke < item.cost}>
                               Купить
