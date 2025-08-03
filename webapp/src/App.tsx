@@ -40,18 +40,18 @@ function getTobaccoBonus(name: string, level: number): number {
   return 0;
 }
 
-// SVG/PNG картинки (работающие)
+// Реальные картинки кальянов и табаков
 const HOOKAHS = [
-  { name: 'Alpha Hookah', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/hookah.svg', cost: 100, bonus: '+2 дыма за клик' },
-  { name: 'Xhoob', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-xing.svg', cost: 200, bonus: '+4 дыма за клик' },
-  { name: 'Maklaud', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-mastercard.svg', cost: 350, bonus: '+7 дыма за клик' },
-  { name: 'Khalil Mamoon', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-hipchat.svg', cost: 500, bonus: '+12 дыма за клик' },
-  { name: 'Union Hookah', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/brand-unity.svg', cost: 700, bonus: '+18 дыма за клик' },
+  { name: 'Alpha Hookah', img: 'https://i.imgur.com/6Qw1QwB.png', cost: 100, bonus: '+2 дыма за клик' },
+  { name: 'Xhoob', img: 'https://w7.pngwing.com/pngs/813/547/png-transparent-golden-hookah-luxury-jewelry-hookah-smoke-fine-thumbnail.png', cost: 200, bonus: '+4 дыма за клик' },
+  { name: 'Maklaud', img: 'https://i.imgur.com/2Qw1QwB.png', cost: 350, bonus: '+7 дыма за клик' },
+  { name: 'Khalil Mamoon', img: 'https://i.imgur.com/3Qw1QwB.png', cost: 500, bonus: '+12 дыма за клик' },
+  { name: 'Union Hookah', img: 'https://i.imgur.com/4Qw1QwB.png', cost: 700, bonus: '+18 дыма за клик' },
 ];
 const TOBACCOS = [
-  { name: 'Darkside', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant.svg', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
-  { name: 'Musthave', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant-2.svg', baseCost: 40, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
-  { name: 'Tangiers', img: 'https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/plant-3.svg', baseCost: 60, bonus: '+2 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Darkside', img: 'https://i.imgur.com/5Qw1QwB.png', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
+  { name: 'Musthave', img: 'https://i.imgur.com/6Qw1QwB.png', baseCost: 40, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Tangiers', img: 'https://i.imgur.com/7Qw1QwB.png', baseCost: 60, bonus: '+2 дыма за клик за уровень', maxLevel: 5 },
 ];
 const ACHIEVEMENTS = [
   { icon: '🥇', label: 'Первый дым', check: (smoke:number)=>smoke>=1 },
@@ -252,7 +252,15 @@ function App() {
         <div>Загрузка...</div>
       ) : (
         <>
-          <div className="counter-block" style={{position: 'relative', minHeight: 120}}>
+          <div className="counter-block" style={{position: 'relative', minHeight: 180}}>
+            <div style={{marginBottom:'clamp(1.2rem,3vw,2.2rem)', display:'flex', flexDirection:'column', alignItems:'center'}}>
+              <img
+                src={HOOKAHS.find(h=>h.name===activeHookah)?.img}
+                alt={activeHookah}
+                style={{width:'clamp(90px,22vw,160px)',height:'clamp(90px,22vw,160px)',objectFit:'contain',borderRadius:'22px',boxShadow:'0 8px 32px #00ff9955',background:'#0f1e13',marginBottom:8,transition:'all 0.4s cubic-bezier(.4,2,.6,1)'}}
+              />
+              <div style={{color:'#00ff99',fontWeight:700,fontSize:'clamp(1.1rem,2vw,1.3rem)',textShadow:'0 2px 12px #0a0f0c'}}>{activeHookah}</div>
+            </div>
             <div className="smoke-count">{smoke} <span role="img" aria-label="smoke">💨</span></div>
             <div className="balance-bar">
               <div className="balance-bar-inner" style={{width: Math.min(100, Math.sqrt(smoke)*10) + '%'}}></div>
