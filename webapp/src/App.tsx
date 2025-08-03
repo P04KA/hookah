@@ -2,6 +2,12 @@ import React, { useEffect, useState, useMemo } from 'react';
 import './App.css';
 import WebApp from '@twa-dev/sdk';
 
+declare global {
+  interface Window {
+    Telegram?: any;
+  }
+}
+
 const tg = WebApp;
 tg.ready();
 tg.expand();
