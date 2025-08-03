@@ -336,6 +336,65 @@ body, html, #root, .App {
   font-family: 'Montserrat', 'Inter', Arial, sans-serif;
   font-weight: 700;
 }
+/* Кнопки "Купить" */
+.shop-content button, .shop-content .buy-btn {
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  padding: 0.4em 1.1em;
+  min-width: 0;
+  min-height: 36px;
+  border-radius: 12px;
+  margin: 0.2em 0;
+}
+
+/* Сетка апгрейдов/кальянов/табаков */
+.upgrades-list, .hookahs-list, .tobaccos-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.upgrades-list li, .hookahs-list li, .tobaccos-list li {
+  flex: 1 1 140px;
+  min-width: 120px;
+  max-width: 180px;
+  box-sizing: border-box;
+}
+
+/* Крестик выхода */
+.shop-exit-btn, .profile-exit-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #00ff99;
+  z-index: 10;
+  padding: 0.2em 0.4em;
+  cursor: pointer;
+}
+
+/* Табы магазина */
+.shop-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+.shop-tabs button {
+  font-size: 1rem;
+  padding: 0.3em 0.8em;
+  min-width: 80px;
+}
+
+/* Модальные окна — адаптивная ширина */
+.shop-content, .profile-content {
+  width: 95vw;
+  max-width: 420px;
+  min-width: 0;
+  padding: 1.2em 0.7em 1.2em 0.7em;
+}
+
 @media (max-width: 600px) {
   .shop-content {
     min-width: 98vw;
@@ -348,5 +407,12 @@ body, html, #root, .App {
   .hookah-card img, .tobacco-card img {
     width: 60px;
     height: 60px;
+  }
+}
+@media (max-width: 400px) {
+  .upgrades-list li, .hookahs-list li, .tobaccos-list li {
+    flex: 1 1 100%;
+    min-width: 90px;
+    max-width: 100%;
   }
 }

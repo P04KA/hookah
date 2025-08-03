@@ -253,6 +253,9 @@ function App() {
   function getHookahCost(idx:number) {
     return Math.floor(100 * Math.pow(2, idx));
   }
+  function getTobaccoCost(idx:number) {
+    return Math.floor(30 * Math.pow(2, idx)); // Assuming base cost for tobacco is 30
+  }
   // Unlock chain для апгрейдов
   function canBuyUpgrade(idx:number) {
     if (idx === 0) return !upgrades.includes(UPGRADE_LIST[0].name);
@@ -354,62 +357,14 @@ function App() {
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
                 <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">✖️</button>
                 <div className="shop-tabs">
-                  <button onClick={()=>setShopTab('hookahs')} className={shopTab==='hookahs'?'active':''}>Кальяны</button>
-                  <button onClick={()=>setShopTab('tobaccos')} className={shopTab==='tobaccos'?'active':''}>Табаки</button>
-                  <button onClick={()=>setShopTab('upgrades')} className={shopTab==='upgrades'?'active':''}>Апгрейды</button>
+                  <button onClick={()=>setShopTab('upgrades')} aria-selected={shopTab==='upgrades'} className={shopTab==='upgrades'?'active':''}>Апгрейды</button>
+                  <button onClick={()=>setShopTab('hookahs')} aria-selected={shopTab==='hookahs'} className={shopTab==='hookahs'?'active':''}>Кальяны</button>
+                  <button onClick={()=>setShopTab('tobaccos')} aria-selected={shopTab==='tobaccos'} className={shopTab==='tobaccos'?'active':''}>Табаки</button>
                 </div>
-                {shopTab==='hookahs' && (
-                  <div>
-                    <h2>Кальяны</h2>
-                    <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center'}}>
-                      {HOOKAHS.map((h,idx)=>(
-                        <div key={h.name} className={`hookah-card${glowCard==='hookah-'+h.name?' glow':''}`}>
-                          <img src={h.img} alt={h.name} />
-                          <div style={{fontWeight:'bold',fontSize:18}}>{h.name}</div>
-                          <div style={{fontSize:14,opacity:0.8}}>{h.bonus}</div>
-                          <div style={{margin:'8px 0'}}>{getHookahCost(idx)}💨</div>
-                          {ownedHookahs.includes(h.name) ? (
-                            <button disabled style={{background:'#222',color:'#00ff99'}}>Куплено</button>
-                          ) : (
-                            <button onClick={()=>handleBuyHookah(h.name)} disabled={smoke<getHookahCost(idx)}>
-                              Купить
-                            </button>
-                          )}
-                          {ownedHookahs.includes(h.name) && activeHookah!==h.name && (
-                            <button onClick={()=>setActiveHookah(h.name)} style={{marginTop:4}}>Сделать активным</button>
-                          )}
-                          {activeHookah===h.name && <div className="active-label">Активный</div>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {shopTab==='tobaccos' && (
-                  <div>
-                    <h2>Табаки</h2>
-                    <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center'}}>
-                      {TOBACCOS.map(t=>
-                        <div key={t.name} className={`tobacco-card${glowCard==='tobacco-'+t.name?' glow':''}`}>
-                          <img src={t.img} alt={t.name} />
-                          <div style={{fontWeight:'bold',fontSize:18}}>{t.name}</div>
-                          <div style={{fontSize:14,opacity:0.8}}>{t.bonus}</div>
-                          <div>Уровень: {tobaccoLevels[t.name]||0} / {t.maxLevel}</div>
-                          <div className="tobacco-bar">
-                            <div className="tobacco-bar-inner" style={{width: ((tobaccoLevels[t.name]||0)/t.maxLevel*100)+'%'}}></div>
-                          </div>
-                          <div style={{margin:'8px 0'}}>{t.baseCost*((tobaccoLevels[t.name]||0)+1)}💨</div>
-                          <button onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke<t.baseCost*((tobaccoLevels[t.name]||0)+1) || (tobaccoLevels[t.name]||0)>=t.maxLevel}>
-                            { (tobaccoLevels[t.name]||0)>=t.maxLevel ? 'Макс. уровень' : 'Прокачать' }
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
                 {shopTab==='upgrades' && (
                   <div>
                     <h2>Апгрейды</h2>
-                    <ul>
+                    <ul className="upgrades-list">
                       {UPGRADE_LIST.map((item, idx) => (
                         <li key={item.name} style={{marginBottom: 8}}>
                           <b>{item.name}</b> — {getUpgradeCost(idx)}💨<br/>
@@ -417,10 +372,51 @@ function App() {
                           {upgrades.includes(item.name) ? (
                             <span style={{color: '#00ff99'}}>Куплено ✅</span>
                           ) : (
-                            <button onClick={() => canBuyUpgrade(idx) && handleBuy(idx)} disabled={smoke < getUpgradeCost(idx) || !canBuyUpgrade(idx)}>
+                            <button className="buy-btn" onClick={() => handleBuy(idx)} disabled={smoke < getUpgradeCost(idx) || !canBuyUpgrade(idx)}>
                               Купить
                             </button>
                           )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {shopTab==='hookahs' && (
+                  <div>
+                    <h2>Кальяны</h2>
+                    <ul className="hookahs-list">
+                      {HOOKAHS.map((h, idx) => (
+                        <li key={h.name} style={{marginBottom: 8}}>
+                          <img src={h.img} alt={h.name} style={{width:48,height:48,objectFit:'contain',borderRadius:8,background:'#0f1e13',marginBottom:4}}/>
+                          <div style={{fontWeight:600}}>{h.name}</div>
+                          <div style={{fontSize:'0.95em',color:'#00ff99'}}>{h.bonus}</div>
+                          <div style={{fontSize:'0.95em'}}>Цена: {getHookahCost(idx)}💨</div>
+                          {ownedHookahs.includes(h.name) ? (
+                            <span style={{color:'#00ff99'}}>Куплено ✅</span>
+                          ) : (
+                            <button className="buy-btn" onClick={()=>handleBuyHookah(h.name)} disabled={smoke < getHookahCost(idx)}>
+                              Купить
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {shopTab==='tobaccos' && (
+                  <div>
+                    <h2>Табаки</h2>
+                    <ul className="tobaccos-list">
+                      {TOBACCOS.map((t, idx) => (
+                        <li key={t.name} style={{marginBottom: 8}}>
+                          <img src={t.img} alt={t.name} style={{width:40,height:40,objectFit:'contain',borderRadius:8,background:'#0f1e13',marginBottom:4}}/>
+                          <div style={{fontWeight:600}}>{t.name}</div>
+                          <div style={{fontSize:'0.95em',color:'#00ff99'}}>{t.bonus}</div>
+                          <div style={{fontSize:'0.95em'}}>Уровень: {tobaccoLevels[t.name] || 0}/{t.maxLevel}</div>
+                          <div style={{fontSize:'0.95em'}}>Цена: {getTobaccoCost(idx)}💨</div>
+                          <button className="buy-btn" onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke < getTobaccoCost(idx) || (tobaccoLevels[t.name]||0) >= t.maxLevel}>
+                            {tobaccoLevels[t.name] >= t.maxLevel ? 'Макс' : 'Купить'}
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -431,7 +427,7 @@ function App() {
           )}
           {profileOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
-              <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
+              <div className="shop-content profile-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
                 <button className="profile-exit-btn" onClick={()=>setProfileOpen(false)} title="Выйти из профиля">✖️</button>
                 <h2>Профиль</h2>
                 <div style={{marginBottom:12}}>
