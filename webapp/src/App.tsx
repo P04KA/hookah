@@ -145,6 +145,7 @@ function App() {
       const shopRes = await fetch(`${API_URL}/shop`);
       const shop = await shopRes.json();
       setShopItems(shop);
+      setTobaccoLevels(user.tobaccos ? user.tobaccos.split(',').map(Number) : Array(TOBACCOS.length).fill(0));
       setLoading(false);
     };
     fetchData();
@@ -295,6 +296,7 @@ function App() {
   // Unlock chain для апгрейдов
   function canBuyUpgrade(idx:number) {
     if (idx === 0) return !upgrades.includes(UPGRADE_LIST[0].name);
+    // Теперь проверяем по индексу: предыдущий апгрейд должен быть куплен
     return upgrades.includes(UPGRADE_LIST[idx-1].name) && !upgrades.includes(UPGRADE_LIST[idx].name);
   }
 
