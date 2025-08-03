@@ -54,10 +54,11 @@ const HOOKAHS = [
   { name: 'Khalil Mamoon', img: 'https://pngimg.com/d/hookah_PNG10.png', cost: 500, bonus: '+12 дыма за клик' },
   { name: 'Union Hookah', img: 'https://pngimg.com/d/hookah_PNG11.png', cost: 700, bonus: '+18 дыма за клик' },
 ];
+// Новый массив табаков с увеличенной ценой
 const TOBACCOS = [
-  { name: 'Darkside', img: 'https://i.imgur.com/5Qw1QwB.png', baseCost: 30, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
-  { name: 'Musthave', img: 'https://i.imgur.com/6Qw1QwB.png', baseCost: 40, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
-  { name: 'Tangiers', img: 'https://i.imgur.com/7Qw1QwB.png', baseCost: 60, bonus: '+2 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Darkside', img: 'https://i.imgur.com/5Qw1QwB.png', baseCost: 300, bonus: '+1 дым за клик за уровень', maxLevel: 5 },
+  { name: 'Musthave', img: 'https://i.imgur.com/6Qw1QwB.png', baseCost: 500, bonus: '+1.5 дыма за клик за уровень', maxLevel: 5 },
+  { name: 'Tangiers', img: 'https://i.imgur.com/7Qw1QwB.png', baseCost: 800, bonus: '+2 дыма за клик за уровень', maxLevel: 5 },
 ];
 const ACHIEVEMENTS = [
   { icon: '🥇', label: 'Первый дым', check: (smoke:number)=>smoke>=1 },
@@ -98,7 +99,8 @@ function App() {
   const [shopTab, setShopTab] = useState<'hookahs'|'tobaccos'|'upgrades'>('hookahs');
   const [ownedHookahs, setOwnedHookahs] = useState<string[]>([]);
   const [activeHookah, setActiveHookah] = useState<string>('Alpha Hookah');
-  const [tobaccoLevels, setTobaccoLevels] = useState<{[name:string]:number}>({});
+  // Инициализация tobaccoLevels как массива
+  const [tobaccoLevels, setTobaccoLevels] = useState<number[]>(() => Array(TOBACCOS.length).fill(0));
   const [profileOpen, setProfileOpen] = useState(false);
   const [glowCard, setGlowCard] = useState<string|null>(null);
   const [level, setLevel] = useState(1);
@@ -110,8 +112,8 @@ function App() {
   const smokePerClick = useMemo(() => {
     let base = 1;
     base += getHookahBonus(activeHookah);
-    for (const t of TOBACCOS) {
-      base += getTobaccoBonus(t.name, tobaccoLevels[t.name] || 0);
+    for (let i = 0; i < TOBACCOS.length; i++) {
+      base += getTobaccoBonus(TOBACCOS[i].name, tobaccoLevels[i] || 0);
     }
     if (upgrades.includes('🔥 Уголь получше')) base += 1;
     if (upgrades.includes('🍏 Яблочный табак')) base += 3;
@@ -143,7 +145,7 @@ function App() {
       setUpgrades(data.upgrades || []);
       setOwnedHookahs(data.ownedHookahs || []);
       setActiveHookah(data.activeHookah || 'Alpha Hookah');
-      setTobaccoLevels(data.tobaccoLevels || {});
+      setTobaccoLevels(data.tobaccoLevels || Array(TOBACCOS.length).fill(0));
       setLevel(data.level || 1);
       setExp(data.exp || 0);
     }
@@ -237,13 +239,22 @@ function App() {
     }
   };
   // Прокачка табака с анимацией
-  const handleUpgradeTobacco = (name: string) => {
-    setTobaccoLevels(levels => {
-      const lvl = (levels[name] || 0) + 1;
-      setGlowCard('tobacco-'+name);
-      setTimeout(()=>setGlowCard(null), 900);
-      return { ...levels, [name]: lvl };
+  const handleUpgradeTobacco = async (idx: number) => {
+    const level = tobaccoLevels[idx] || 0;
+    if (level >= TOBACCOS[idx].maxLevel) return; // Уже максимальный уровень
+    const cost = getTobaccoCost(idx);
+    if (smoke < cost) return; // Не хватает дыма
+    const newLevels = [...tobaccoLevels];
+    newLevels[idx] = level + 1;
+    setTobaccoLevels(newLevels);
+    setSmoke(s => s - cost);
+    // Сохраняем на сервере
+    await fetch(`${API_URL}/user/smoke`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: USER_ID, smoke: smoke - cost, username })
     });
+    // Можно добавить сохранение уровня табака на сервере, если реализовано
   };
 
   // Экономика: прогрессия цен апгрейдов и кальянов
@@ -253,8 +264,10 @@ function App() {
   function getHookahCost(idx:number) {
     return Math.floor(100 * Math.pow(2, idx));
   }
-  function getTobaccoCost(idx:number) {
-    return Math.floor(30 * Math.pow(2, idx)); // Assuming base cost for tobacco is 30
+  // Функция для расчёта стоимости табака с прогрессией
+  function getTobaccoCost(idx: number) {
+    const level = tobaccoLevels[idx] || 0;
+    return TOBACCOS[idx].baseCost * Math.pow(10, level);
   }
   // Unlock chain для апгрейдов
   function canBuyUpgrade(idx:number) {
@@ -356,10 +369,6 @@ function App() {
           {shopOpen && (
             <div className="shop-modal" style={{animation:'fadeIn 0.5s'}}>
               <div className="shop-content" style={{animation:'fadeInUp 0.7s', position:'relative'}}>
-                <button className="shop-exit-btn" onClick={() => setShopOpen(false)} title="Выйти из магазина">
-                  <span style={{fontSize:'2.2rem',lineHeight:1}}>✖️</span>
-                  <span className="exit-label">Закрыть</span>
-                </button>
                 <div className="shop-tabs">
                   <button className={shopTab==='upgrades'?'active':''} onClick={()=>setShopTab('upgrades')}>Апгрейды</button>
                   <button className={shopTab==='hookahs'?'active':''} onClick={()=>setShopTab('hookahs')}>Кальяны</button>
@@ -404,7 +413,7 @@ function App() {
                             <div className="tobacco-bar">
                               <div className="tobacco-bar-inner" style={{width: `${((tobaccoLevels[idx]||0)/t.maxLevel*100)}%`}}></div>
                             </div>
-                            <button className="buy-btn" onClick={()=>handleUpgradeTobacco(t.name)} disabled={smoke < getTobaccoCost(idx) || (tobaccoLevels[idx]||0) >= t.maxLevel}>
+                            <button className="buy-btn" onClick={()=>handleUpgradeTobacco(idx)} disabled={smoke < getTobaccoCost(idx) || (tobaccoLevels[idx]||0) >= t.maxLevel}>
                               {tobaccoLevels[idx] >= t.maxLevel ? 'Макс' : 'Купить'}
                             </button>
                           </div>
@@ -438,6 +447,9 @@ function App() {
                   </div>
                 )}
               </div>
+              <button className="shop-exit-btn-bottom" onClick={() => setShopOpen(false)} title="Закрыть меню">
+                <span className="shop-exit-cross">✖️</span>
+              </button>
             </div>
           )}
           {profileOpen && (
@@ -468,7 +480,7 @@ function App() {
                   <b>Табаки:</b><br/>
                   {TOBACCOS.map(t=>(
                     <span key={t.name} style={{marginRight:8}}>
-                      <img src={t.img} alt={t.name} style={{width:32,height:32,borderRadius:6,verticalAlign:'middle'}}/> {t.name}: {tobaccoLevels[t.name]||0}
+                      <img src={t.img} alt={t.name} style={{width:32,height:32,borderRadius:6,verticalAlign:'middle'}}/> {t.name}: {tobaccoLevels[TOBACCOS.findIndex(tob=>tob.name===t.name)]||0}
                     </span>
                   ))}
                 </div>

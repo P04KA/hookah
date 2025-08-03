@@ -509,30 +509,36 @@ body, html, #root, .App {
   box-shadow: 0 4px 16px #00ff9955;
 }
 
-.shop-exit-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 2.2rem;
+.shop-exit-btn-bottom {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 1200;
   background: #0f1e13cc;
   color: #00ff99;
   border: none;
   border-radius: 50%;
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  padding: 0;
+  box-shadow: 0 2px 16px #00ff9955;
   cursor: pointer;
-  box-shadow: 0 2px 8px #00ff9933;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: box-shadow 0.2s, background 0.2s;
+  font-size: 2.5rem;
+  outline: none;
 }
-.shop-exit-btn:hover {
+.shop-exit-btn-bottom:active, .shop-exit-btn-bottom.glow {
+  box-shadow: 0 0 32px 8px #00ff99, 0 2px 16px #00ff9955;
   background: #00ff99;
   color: #0f1e13;
-  box-shadow: 0 4px 16px #00ff9955;
+}
+.shop-exit-cross {
+  font-size: 2.5rem;
+  line-height: 1;
+  pointer-events: none;
 }
 .exit-label {
   display: none;
